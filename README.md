@@ -6,6 +6,8 @@ A mod that gives you an in-game warning when a lobby owner is using Control Comp
 
 Both parties need to have LC_API installed for the mod to work.
 
+Please don't try to use Control Company and this mod together, as it will lead to errors and the mod not working.
+
 ## How to configure and use:
 
 For the mod to work, you need to tell it what the path to your current BepInEx folder is.
