@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControlCompanyDetector", "ControlCompanyDetector\ControlCompanyDetector.csproj", "{B9F6F6FE-D760-49E7-9FFA-A23D64F3E1EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B9F6F6FE-D760-49E7-9FFA-A23D64F3E1EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F6F6FE-D760-49E7-9FFA-A23D64F3E1EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F6F6FE-D760-49E7-9FFA-A23D64F3E1EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F6F6FE-D760-49E7-9FFA-A23D64F3E1EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {53F13D84-CB5D-4D1A-BD9A-A61A6D926B15}
+	EndGlobalSection
+EndGlobal
