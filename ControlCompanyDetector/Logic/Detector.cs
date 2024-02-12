@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Collections;
 using ControlCompanyDetector.Patches;
 using static UnityEngine.Scripting.GarbageCollector;
+using System;
 
 namespace ControlCompanyDetector.Logic
 {
@@ -40,19 +41,10 @@ namespace ControlCompanyDetector.Logic
         public static IEnumerator ReadBepinLog()
         {
             Plugin.LogInfoMLS("Waiting to read log file...");
-            bool shouldContinue = true;
 
             yield return new WaitForSeconds(4.5f);
-
-            foreach (PluginInfo info in Mods.Values)
-            {
-                if (info.Metadata.GUID.Equals("ControlCompany.ControlCompany"))
-                {
-                    shouldContinue = false;
-                    Plugin.LogWarnMLS("Control Company detected on client, stopping corroutine. Please do not use Control Company and this mod together");
-                    Detector.SendUITip("ERROR:", "Please do not use Control Company and Control Company Detector together");
-                }
-            }
+            
+            bool shouldContinue = Detector.CheckLocalPlugins();
 
             if (!Player.LocalPlayer.IsHost && shouldContinue)
             {
@@ -77,6 +69,21 @@ namespace ControlCompanyDetector.Logic
                     previousLastCCLine = lastCCline;
                 }
             }
+        }
+
+        internal static bool CheckLocalPlugins()
+        {
+            bool shouldContinue = true;
+            foreach (PluginInfo info in Mods.Values)
+            {
+                if (info.Metadata.GUID.Equals("ControlCompany.ControlCompany"))
+                {
+                    shouldContinue = false;
+                    Plugin.LogWarnMLS("Control Company detected on client, stopping corroutine. Please do not use Control Company and this mod together");
+                    Detector.SendUITip("ERROR:", "Please do not use Control Company and Control Company Detector together");
+                }
+            }
+            return shouldContinue;
         }
 
         internal static int FindLastLineOccurrence(string targetLine, FileInfo[] filesToEdit)
