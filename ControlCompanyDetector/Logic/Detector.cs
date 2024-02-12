@@ -42,12 +42,12 @@ namespace ControlCompanyDetector.Logic
         }
 
         //[NetworkMessage("CCD_SendMods")]
-        internal static void SendUITip(/*ulong senderId*/ string header, string message)
-        {
+        //internal static void SendUITip(/*ulong senderId*/ string header, string message)
+        //{
             // Player player = Player.Get(senderId);
             // HUDManagerPatch.displayTip = true;
             // Player.LocalPlayer.QueueTip(header, message, 5f, 0, true, false, "LC_Tip1");
-        }
+        //}
 
         internal static void SendUITip(/*ulong senderId*/ string header, string message, bool warning)
         {
