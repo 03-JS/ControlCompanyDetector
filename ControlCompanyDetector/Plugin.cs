@@ -11,10 +11,10 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "1.0.0";
+        private const string modVersion = "2.0.0";
 
         // Config related
-        public static ConfigEntry<string> bepinexPathEntry;
+        // public static ConfigEntry<string> bepinexPathEntry;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -27,14 +27,14 @@ namespace ControlCompanyDetector
                 Instance = this;
             }
 
-            bepinexPathEntry = Config.Bind(
-                    "Critical", // Config section
-                    "BepInEx Directory", // Key of this config
-                    "Paste your BepInEx folder here", // Default value
-                    "For the mod to work, you need to paste your BepInEx folder here." + // Description
-                    "\nTo find it inside Thunderstore / r2modman go to Settings > Browse profile folder > BepInEx." +
-                    "\nOnce you're there just copy and paste the path to the folder."
-            );
+            //bepinexPathEntry = Config.Bind(
+            //        "Critical", // Config section
+            //        "BepInEx Directory", // Key of this config
+            //        "Paste your BepInEx folder here", // Default value
+            //        "For the mod to work, you need to paste your BepInEx folder here." + // Description
+            //        "\nTo find it inside Thunderstore / r2modman go to Settings > Browse profile folder > BepInEx." +
+            //        "\nOnce you're there just copy and paste the path to the folder."
+            //);
 
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             mls.LogInfo("Control Company Detector has started");

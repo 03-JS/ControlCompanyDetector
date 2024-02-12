@@ -1,6 +1,5 @@
 ﻿using ControlCompanyDetector.Logic;
 using HarmonyLib;
-using LC_API.GameInterfaceAPI.Features;
 using UnityEngine;
 
 namespace ControlCompanyDetector.Patches
@@ -12,9 +11,9 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void PatchOnPlayerConnected()
         {
-            if (HUDManager.Instance != null && Player.HostPlayer != null)
+            if (HUDManager.Instance != null /*&& Player.HostPlayer != null*/)
             {
-                Detector.StartDetection();
+                CoroutineManager.StartCoroutine(Detector.StartDetection());
             }
         }
     }
