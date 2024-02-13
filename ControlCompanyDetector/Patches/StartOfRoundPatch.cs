@@ -11,7 +11,7 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void PatchOnPlayerConnected()
         {
-            if (HUDManager.Instance != null /*&& Player.HostPlayer != null*/)
+            if (HUDManager.Instance != null && !StartOfRound.Instance.IsHost)
             {
                 CoroutineManager.StartCoroutine(Detector.StartDetection());
             }

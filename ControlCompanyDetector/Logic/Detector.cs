@@ -8,6 +8,7 @@ using ControlCompanyDetector.Patches;
 using static UnityEngine.Scripting.GarbageCollector;
 using System;
 using System.Linq;
+using Unity.Netcode;
 
 namespace ControlCompanyDetector.Logic
 {
@@ -28,7 +29,7 @@ namespace ControlCompanyDetector.Logic
             //}
             Plugin.LogInfoMLS("Starting detection...");
 
-            yield return new WaitForSeconds(4.5f);
+            yield return new WaitForSeconds(3.5f);
             
             Plugin.LogInfoMLS("Lobby name: " + GameNetworkManager.Instance.steamLobbyName);
             if (GameNetworkManager.Instance != null)
