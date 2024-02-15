@@ -16,6 +16,7 @@ namespace ControlCompanyDetector
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
+        public static ConfigEntry<bool> showInfoMessage;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -33,6 +34,13 @@ namespace ControlCompanyDetector
                     "Ignore Friend Lobbies", // Key of this config
                     true, // Default value
                     "Should the mod completely ignore lobbies created by friends?" // Description
+            );
+
+            showInfoMessage = Config.Bind(
+                    "General", // Config section
+                    "Show info message", // Key of this config
+                    true, // Default value
+                    "Set this to false if you want to hide the info message that appears when you join a friend's lobby and Ignore Friendly Lobbies is set to true" // Description
             );
 
             //bepinexPathEntry = Config.Bind(

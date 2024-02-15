@@ -41,7 +41,7 @@ namespace ControlCompanyDetector.Logic
             {
                 Detector.Detect();
             }
-            else
+            else if (Plugin.showInfoMessage.Value)
             {
                 Detector.SendUITip("Control Company Detector:", "Lobbies created by friends are currently being ignored. Check the mod config for more info", false);
             }
