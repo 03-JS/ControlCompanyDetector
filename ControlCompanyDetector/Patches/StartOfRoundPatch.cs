@@ -1,5 +1,6 @@
 ﻿using ControlCompanyDetector.Logic;
 using HarmonyLib;
+using Steamworks.Data;
 using UnityEngine;
 
 namespace ControlCompanyDetector.Patches

@@ -11,10 +11,11 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "2.1.0";
+        private const string modVersion = "2.1.1";
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
+        public static ConfigEntry<bool> ignoreFriendlyLobbies;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -26,6 +27,13 @@ namespace ControlCompanyDetector
             {
                 Instance = this;
             }
+
+            ignoreFriendlyLobbies = Config.Bind(
+                    "General", // Config section
+                    "Ignore Friend Lobbies", // Key of this config
+                    true, // Default value
+                    "Should the mod completely ignore lobbies created by friends?" // Description
+            );
 
             //bepinexPathEntry = Config.Bind(
             //        "Critical", // Config section
@@ -43,7 +51,6 @@ namespace ControlCompanyDetector
 
             harmony.PatchAll(typeof(Plugin));
             harmony.PatchAll(typeof(StartOfRoundPatch));
-            harmony.PatchAll(typeof(HUDManagerPatch));
         }
 
         public static void LogInfoMLS(string info)

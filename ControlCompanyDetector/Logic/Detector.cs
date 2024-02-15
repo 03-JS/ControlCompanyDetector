@@ -17,6 +17,7 @@ namespace ControlCompanyDetector.Logic
         // private static Dictionary<string, PluginInfo> Mods = new Dictionary<string, PluginInfo>();
         // private static int previousLastCCLine;
 
+
         public static IEnumerator StartDetection()
         {
             //HUDManagerPatch.displayTip = false;
@@ -27,10 +28,28 @@ namespace ControlCompanyDetector.Logic
             //    Network.Broadcast("LC_API_ReqGUID");
             //    CoroutineManager.StartCoroutine(ReadBepinLog());
             //}
-            Plugin.LogInfoMLS("Starting detection...");
+
+            Plugin.LogInfoMLS("Checking if host and client are friends...");
 
             yield return new WaitForSeconds(3.5f);
-            
+
+            if (!StartOfRound.Instance.IsClientFriendsWithHost())
+            {
+                Detector.Detect();
+            }
+            else if (!Plugin.ignoreFriendlyLobbies.Value)
+            {
+                Detector.Detect();
+            }
+            else
+            {
+                Detector.SendUITip("Control Company Detector:", "Lobbies created by friends are currently being ignored. Check the mod config for more info", false);
+            }
+        }
+
+        internal static void Detect()
+        {
+            Plugin.LogInfoMLS("Detection started");
             Plugin.LogInfoMLS("Lobby name: " + GameNetworkManager.Instance.steamLobbyName);
             if (GameNetworkManager.Instance != null)
             {
@@ -45,9 +64,9 @@ namespace ControlCompanyDetector.Logic
         //[NetworkMessage("CCD_SendMods")]
         //internal static void SendUITip(/*ulong senderId*/ string header, string message)
         //{
-            // Player player = Player.Get(senderId);
-            // HUDManagerPatch.displayTip = true;
-            // Player.LocalPlayer.QueueTip(header, message, 5f, 0, true, false, "LC_Tip1");
+        // Player player = Player.Get(senderId);
+        // HUDManagerPatch.displayTip = true;
+        // Player.LocalPlayer.QueueTip(header, message, 5f, 0, true, false, "LC_Tip1");
         //}
 
         internal static void SendUITip(/*ulong senderId*/ string header, string message, bool warning)
