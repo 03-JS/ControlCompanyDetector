@@ -61,6 +61,7 @@ namespace ControlCompanyDetector
 
             harmony.PatchAll(typeof(Plugin));
             harmony.PatchAll(typeof(StartOfRoundPatch));
+            harmony.PatchAll(typeof(LobbyListPatch));
         }
 
         public static void LogInfoMLS(string info)
