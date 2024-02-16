@@ -46,9 +46,9 @@ namespace ControlCompanyDetector
 
             hideControlCompanyLobbies = Config.Bind(
                 "General", // Config section
-                "Hide Control Company Servers", // Key of this config
+                "Hide Control Company Lobbies", // Key of this config
                 false, // Default value
-                "Hides lobbies hosting the Control Company Mod" // Description
+                "Hides lobbies hosting Control Company" // Description
             );
 
             //bepinexPathEntry = Config.Bind(
@@ -62,6 +62,15 @@ namespace ControlCompanyDetector
 
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             mls.LogInfo("Control Company Detector has started");
+
+            if (hideControlCompanyLobbies.Value)
+            {
+                mls.LogWarning("Lobbies hosting Control Company will be hidden");
+            }
+            else
+            {
+                mls.LogWarning("Lobbies hosting Control Company will be shown");
+            }
 
             // Network.RegisterAll();
 
