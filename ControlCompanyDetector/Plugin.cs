@@ -17,7 +17,7 @@ namespace ControlCompanyDetector
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
         public static ConfigEntry<bool> showInfoMessage;
-        public static ConfigEntry<bool> hideControlCompanyEnabledServers;
+        public static ConfigEntry<bool> hideControlCompanyLobbies;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -31,20 +31,26 @@ namespace ControlCompanyDetector
             }
 
             ignoreFriendlyLobbies = Config.Bind(
-                    "General", // Config section
-                    "Ignore Friend Lobbies", // Key of this config
-                    true, // Default value
-                    "Should the mod completely ignore lobbies created by friends?" // Description
+                "General", // Config section
+                "Ignore Friend Lobbies", // Key of this config
+                true, // Default value
+                "Should the mod completely ignore lobbies created by friends?" // Description
             );
 
             showInfoMessage = Config.Bind(
-                    "General", // Config section
-                    "Show info message", // Key of this config
-                    true, // Default value
-                    "Set this to false if you want to hide the info message that appears when you join a friend's lobby and Ignore Friendly Lobbies is set to true" // Description
+                "General", // Config section
+                "Show info message", // Key of this config
+                true, // Default value
+                "Set this to false if you want to hide the info message that appears when you join a friend's lobby and Ignore Friendly Lobbies is set to true" // Description
             );
-            
-            hideControlCompanyEnabledServers = Config.Bind("General", "Hide Control Company Servers", false, "Hides servers hosting the Control Company Mod");
+
+            hideControlCompanyLobbies = Config.Bind(
+                "General", // Config section
+                "Hide Control Company Servers", // Key of this config
+                false, // Default value
+                "Hides lobbies hosting the Control Company Mod" // Description
+            );
+
             //bepinexPathEntry = Config.Bind(
             //        "Critical", // Config section
             //        "BepInEx Directory", // Key of this config

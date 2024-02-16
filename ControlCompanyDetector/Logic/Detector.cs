@@ -17,7 +17,6 @@ namespace ControlCompanyDetector.Logic
         // private static Dictionary<string, PluginInfo> Mods = new Dictionary<string, PluginInfo>();
         // private static int previousLastCCLine;
 
-
         public static IEnumerator StartDetection()
         {
             //HUDManagerPatch.displayTip = false;
