@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ControlCompanyDetector;
 using HarmonyLib;
 using Steamworks.Data;
 
-namespace ControlCompany.Patches
+namespace ControlCompanyDetector.Patches
 {
 	// Token: 0x02000008 RID: 8
 	internal class LobbyListPatch
@@ -15,7 +14,7 @@ namespace ControlCompany.Patches
 		[HarmonyPrefix]
 		private static void FilterLobbyList(ref Lobby[] lobbyList, ref Lobby[] ___currentLobbyList)
 		{
-			if (ConfigManager.hideControlCompanyEnabledServers.Value)
+			if (Plugin.hideControlCompanyEnabledServers.Value)
 			{
 				List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
 				list.RemoveAll(delegate(Lobby lobby)
