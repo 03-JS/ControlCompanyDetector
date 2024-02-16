@@ -17,6 +17,7 @@ namespace ControlCompanyDetector
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
         public static ConfigEntry<bool> showInfoMessage;
+        public static ConfigEntry<bool> hideControlCompanyEnabledServers;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -42,7 +43,8 @@ namespace ControlCompanyDetector
                     true, // Default value
                     "Set this to false if you want to hide the info message that appears when you join a friend's lobby and Ignore Friendly Lobbies is set to true" // Description
             );
-
+            
+            hideControlCompanyEnabledServers = Config.Bind("General", "Hide Control Company Servers", false, "Hides servers hosting the Control Company Mod");
             //bepinexPathEntry = Config.Bind(
             //        "Critical", // Config section
             //        "BepInEx Directory", // Key of this config
@@ -59,6 +61,7 @@ namespace ControlCompanyDetector
 
             harmony.PatchAll(typeof(Plugin));
             harmony.PatchAll(typeof(StartOfRoundPatch));
+            harmony.PatchAll(typeof(LobbyListPatch));
         }
 
         public static void LogInfoMLS(string info)
