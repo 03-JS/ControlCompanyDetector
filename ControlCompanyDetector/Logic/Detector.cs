@@ -72,6 +72,7 @@ namespace ControlCompanyDetector.Logic
         {
             // Player player = Player.Get(senderId);
             // HUDManagerPatch.displayTip = true;
+            Plugin.LogInfoMLS("Displaying HUD message");
             HUDManager.Instance.DisplayTip(header, message, warning, false, "LC_Tip1");
         }
 

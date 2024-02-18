@@ -16,6 +16,7 @@ namespace ControlCompanyDetector
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
+        public static ConfigEntry<bool> detectEnemyControl;
         public static ConfigEntry<bool> showInfoMessage;
         public static ConfigEntry<bool> hideControlCompanyLobbies;
 
@@ -35,6 +36,13 @@ namespace ControlCompanyDetector
                 "Ignore Friend Lobbies", // Key of this config
                 true, // Default value
                 "Should the mod completely ignore lobbies created by friends?" // Description
+            );
+
+            detectEnemyControl = Config.Bind(
+                "General", // Config section
+                "Detect Enemy Control", // Key of this config
+                true, // Default value
+                "Should the mod be able to detect if an enemy is being controlled?\n(Only works with indoor enemies)" // Description
             );
 
             showInfoMessage = Config.Bind(
@@ -77,6 +85,8 @@ namespace ControlCompanyDetector
             harmony.PatchAll(typeof(Plugin));
             harmony.PatchAll(typeof(StartOfRoundPatch));
             harmony.PatchAll(typeof(LobbyListPatch));
+            harmony.PatchAll(typeof(RoundManagerPatch));
+            harmony.PatchAll(typeof(EnemyVentPatch));
         }
 
         public static void LogInfoMLS(string info)
