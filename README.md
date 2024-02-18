@@ -18,4 +18,4 @@ Here's a full list of all the enemies the mod is able to detect:
 - Coil-Head
 - Nutcracker
 - Jester
-- Lasso man (yes, it can also detect him)
+- Lasso man (yes, it can also detect it)
