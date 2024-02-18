@@ -101,7 +101,7 @@ namespace ControlCompanyDetector.Patches
             if (enemyName.Contains("BUG"))
             {
                 int randomNumber = UnityEngine.Random.Range(0, 4);
-                enemyName = randomNumber == 0 ? "Yippie Bug" : "Hoarding Bug";
+                enemyName = randomNumber == 0 ? "Yippee Bug" : "Hoarding Bug";
             }
             if (enemyName.Contains("NUT"))
             {
