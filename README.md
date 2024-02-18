@@ -1,6 +1,6 @@
 # Description
 
-A fully configurable mod that gives you an in-game warning when a lobby host is using Control Company and when they're controlling an indoor enemy. It can also hide lobbies that use it.
+A fully configurable mod that gives you an in-game warning when a lobby host is using Control Company and when they're controlling an enemy indoors. It can also hide lobbies that use it.
 
 # Controlled enemies detection
 
