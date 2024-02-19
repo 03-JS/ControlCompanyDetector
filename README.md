@@ -16,6 +16,10 @@ Here's a full list of all the enemies the mod is able to detect:
 - Thumper
 - Bracken
 - Coil-Head
+- Masked / Mimic
 - Nutcracker
 - Jester
 - Lasso man (yes, it can also detect it)
+
+**WARNING:**
+Any mods that alter how indoor enemies spawn will most likely cause this feature to not work properly
