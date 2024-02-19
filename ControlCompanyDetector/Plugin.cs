@@ -11,7 +11,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.0.1";
+        private const string modVersion = "3.1.0";
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;

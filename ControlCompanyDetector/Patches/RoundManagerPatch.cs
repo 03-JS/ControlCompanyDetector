@@ -14,7 +14,7 @@ namespace ControlCompanyDetector.Patches
         internal static int enemyCount;
         internal static int previousEnemyCount;
         internal static int previousOpenVentCount;
-        internal static bool hasEnemyCountIncreased;
+        internal static int previousPlayerCount;
         internal static EnemyAI spawnedEnemy;
 
         [HarmonyPatch("Update")]
@@ -41,28 +41,37 @@ namespace ControlCompanyDetector.Patches
 
             if (enemyCount > previousEnemyCount)
             {
-                if (!hasEnemyCountIncreased)
-                {
-                    DetectIndoorsEnemyControl(enemies);
-                }
-                hasEnemyCountIncreased = true;
-                previousOpenVentCount = EnemyVentPatch.openVentCount;
+                    spawnedEnemy = enemies[0];
+                    DetectIndoorsEnemyControl();
+                    DetectMaskedEnemyControl();
+
+                    previousOpenVentCount = EnemyVentPatch.openVentCount;
+                    previousPlayerCount = StartOfRound.Instance.livingPlayers;
             }
-            else
-            {
-                hasEnemyCountIncreased = false;
-            }
+
             previousEnemyCount = enemyCount;
         }
 
-        internal static void DetectIndoorsEnemyControl(EnemyAI[] enemies)
+        internal static void DetectIndoorsEnemyControl()
         {
-            spawnedEnemy = enemies[0];
             // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
             if (!spawnedEnemy.enemyType.isOutsideEnemy && !spawnedEnemy.name.ToUpper().Contains("DRESSGIRL"))
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
                 if (EnemyVentPatch.openVentCount <= previousOpenVentCount)
+                {
+                    DisplayEnemyMessage("The host has spawned a " + FormatEnemyName(spawnedEnemy.name));
+                }
+            }
+        }
+
+        internal static void DetectMaskedEnemyControl()
+        {
+            // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
+            if (spawnedEnemy.name.ToUpper().Contains("MASK"))
+            {
+                // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
+                if (EnemyVentPatch.openVentCount <= previousOpenVentCount && previousPlayerCount <= StartOfRound.Instance.livingPlayers)
                 {
                     DisplayEnemyMessage("The host has spawned a " + FormatEnemyName(spawnedEnemy.name));
                 }
@@ -118,6 +127,10 @@ namespace ControlCompanyDetector.Patches
             if (enemyName.Contains("JESTER"))
             {
                 enemyName = "Jester";
+            }
+            if (enemyName.Contains("MASK"))
+            {
+                enemyName = "Masked Employee";
             }
             if (enemyName.Contains("LASSO"))
             {
