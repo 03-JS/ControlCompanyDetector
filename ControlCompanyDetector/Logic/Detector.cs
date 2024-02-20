@@ -16,6 +16,7 @@ namespace ControlCompanyDetector.Logic
     {
         // private static Dictionary<string, PluginInfo> Mods = new Dictionary<string, PluginInfo>();
         // private static int previousLastCCLine;
+        public static bool hostHasCC;
 
         public static IEnumerator StartDetection()
         {
@@ -54,8 +55,13 @@ namespace ControlCompanyDetector.Logic
             {
                 if (GameNetworkManager.Instance.steamLobbyName.Contains('\u200b'))
                 {
+                    hostHasCC = true;
                     Plugin.LogWarnMLS("Control Company has been detected");
                     Detector.SendUITip("WARNING:", "The host is using Control Company", true);
+                }
+                else
+                {
+                    hostHasCC = false;
                 }
             }
         }

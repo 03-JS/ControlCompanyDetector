@@ -23,20 +23,20 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void PatchUpdate()
         {
-            if (Plugin.detectEnemyControl.Value && !StartOfRound.Instance.IsHost)
+            if (Plugin.detectEnemySpawning.Value && !StartOfRound.Instance.IsHost)
             {
                 if (!StartOfRound.Instance.IsClientFriendsWithHost())
                 {
-                    DetectEnemyControl();
+                    DetectEnemySpawning();
                 }
                 else if (!Plugin.ignoreFriendlyLobbies.Value)
                 {
-                    DetectEnemyControl();
+                    DetectEnemySpawning();
                 }
             }
         }
 
-        internal static void DetectEnemyControl()
+        internal static void DetectEnemySpawning()
         {
             EnemyAI[] enemies = FindObjectsOfType<EnemyAI>();
             enemyCount = enemies.Length;
@@ -44,8 +44,8 @@ namespace ControlCompanyDetector.Patches
             if (enemyCount > previousEnemyCount)
             {
                 spawnedEnemy = enemies[0];
-                DetectIndoorsEnemyControl();
-                DetectMaskedEnemyControl();
+                DetectIndoorsEnemySpawning();
+                DetectMaskedEnemySpawning();
 
                 previousOpenVentCount = EnemyVentPatch.openVentCount;
                 previousMaskDeaths = maskDeaths;
@@ -54,7 +54,7 @@ namespace ControlCompanyDetector.Patches
             previousEnemyCount = enemyCount;
         }
 
-        internal static void DetectIndoorsEnemyControl()
+        internal static void DetectIndoorsEnemySpawning()
         {
             // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
             if (!spawnedEnemy.enemyType.isOutsideEnemy && !spawnedEnemy.name.ToUpper().Contains("DRESSGIRL"))
@@ -62,12 +62,12 @@ namespace ControlCompanyDetector.Patches
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
                 if (EnemyVentPatch.openVentCount <= previousOpenVentCount)
                 {
-                    DisplayEnemyMessage("The host has spawned a " + FormatEnemyName(spawnedEnemy.name));
+                    DisplayEnemyMessage();
                 }
             }
         }
 
-        internal static void DetectMaskedEnemyControl()
+        internal static void DetectMaskedEnemySpawning()
         {
             // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
             if (spawnedEnemy.name.ToUpper().Contains("MASK"))
@@ -77,15 +77,22 @@ namespace ControlCompanyDetector.Patches
                 // Plugin.LogInfoMLS("previousDeaths: " + previousMaskDeaths);
                 if (EnemyVentPatch.openVentCount <= previousOpenVentCount && previousMaskDeaths == maskDeaths)
                 {
-                    DisplayEnemyMessage("The host has spawned a " + FormatEnemyName(spawnedEnemy.name));
+                    DisplayEnemyMessage();
                 }
             }
         }
 
-        internal static void DisplayEnemyMessage(string message)
+        internal static void DisplayEnemyMessage()
         {
             Plugin.LogWarnMLS("An enemy has been manually spawned");
-            Detector.SendUITip("WARNING:", message, false);
+            if (Detector.hostHasCC)
+            {
+                Detector.SendUITip("WARNING:", "The host has spawned a " + FormatEnemyName(spawnedEnemy.name), false);
+            }
+            else
+            {
+                Detector.SendUITip("WARNING:", "A " + FormatEnemyName(spawnedEnemy.name) + " has been spawned by a player", false);
+            }
         }
 
         internal static string FormatEnemyName(string enemyName)

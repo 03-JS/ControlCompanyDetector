@@ -11,12 +11,12 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.1.1";
+        private const string modVersion = "3.1.2";
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
-        public static ConfigEntry<bool> detectEnemyControl;
+        public static ConfigEntry<bool> detectEnemySpawning;
         public static ConfigEntry<bool> showInfoMessage;
         public static ConfigEntry<bool> hideControlCompanyLobbies;
 
@@ -38,11 +38,11 @@ namespace ControlCompanyDetector
                 "Should the mod completely ignore lobbies created by friends?" // Description
             );
 
-            detectEnemyControl = Config.Bind(
+            detectEnemySpawning = Config.Bind(
                 "General", // Config section
-                "Detect Enemy Control", // Key of this config
+                "Detect Enemy Spawning", // Key of this config
                 true, // Default value
-                "Should the mod be able to detect if an enemy is being controlled?\n(Only works with indoor enemies)" // Description
+                "Should the mod be able to detect if an enemy has been spawned by the host / a player? (Only works with indoor enemies)" // Description
             );
 
             showInfoMessage = Config.Bind(
