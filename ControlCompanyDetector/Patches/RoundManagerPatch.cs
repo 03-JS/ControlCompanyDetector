@@ -1,4 +1,5 @@
 ﻿using ControlCompanyDetector.Logic;
+using GameNetcodeStuff;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,12 @@ namespace ControlCompanyDetector.Patches
         internal static int enemyCount;
         internal static int previousEnemyCount;
         internal static int previousOpenVentCount;
-        internal static int previousPlayerCount;
+        public static int maskDeaths;
+        internal static int previousMaskDeaths;
         internal static EnemyAI spawnedEnemy;
 
         [HarmonyPatch("Update")]
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         static void PatchUpdate()
         {
             if (Plugin.detectEnemyControl.Value && !StartOfRound.Instance.IsHost)
@@ -41,12 +43,12 @@ namespace ControlCompanyDetector.Patches
 
             if (enemyCount > previousEnemyCount)
             {
-                    spawnedEnemy = enemies[0];
-                    DetectIndoorsEnemyControl();
-                    DetectMaskedEnemyControl();
+                spawnedEnemy = enemies[0];
+                DetectIndoorsEnemyControl();
+                DetectMaskedEnemyControl();
 
-                    previousOpenVentCount = EnemyVentPatch.openVentCount;
-                    previousPlayerCount = StartOfRound.Instance.livingPlayers;
+                previousOpenVentCount = EnemyVentPatch.openVentCount;
+                previousMaskDeaths = maskDeaths;
             }
 
             previousEnemyCount = enemyCount;
@@ -71,7 +73,9 @@ namespace ControlCompanyDetector.Patches
             if (spawnedEnemy.name.ToUpper().Contains("MASK"))
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
-                if (EnemyVentPatch.openVentCount <= previousOpenVentCount && previousPlayerCount <= StartOfRound.Instance.livingPlayers)
+                // Plugin.LogInfoMLS("deaths: " + maskDeaths);
+                // Plugin.LogInfoMLS("previousDeaths: " + previousMaskDeaths);
+                if (EnemyVentPatch.openVentCount <= previousOpenVentCount && previousMaskDeaths == maskDeaths)
                 {
                     DisplayEnemyMessage("The host has spawned a " + FormatEnemyName(spawnedEnemy.name));
                 }

@@ -11,7 +11,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.1.0";
+        private const string modVersion = "3.1.1";
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
@@ -80,13 +80,17 @@ namespace ControlCompanyDetector
                 mls.LogWarning("Lobbies hosting Control Company will be shown");
             }
 
-            // Network.RegisterAll();
+            PatchStuff();
+        }
 
+        internal void PatchStuff()
+        {
             harmony.PatchAll(typeof(Plugin));
             harmony.PatchAll(typeof(StartOfRoundPatch));
             harmony.PatchAll(typeof(LobbyListPatch));
             harmony.PatchAll(typeof(RoundManagerPatch));
             harmony.PatchAll(typeof(EnemyVentPatch));
+            harmony.PatchAll(typeof(MaskedEnemyPatch));
         }
 
         public static void LogInfoMLS(string info)
