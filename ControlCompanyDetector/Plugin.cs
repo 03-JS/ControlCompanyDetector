@@ -14,7 +14,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.2.1";
+        private const string modVersion = "3.2.2";
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
@@ -104,7 +104,7 @@ namespace ControlCompanyDetector
             detectEnemySpawningAsHost = Config.Bind(
                 "Spawn detection", // Config section
                 "Detect enemy spawning as host", // Key of this config
-                true, // Default value
+                false, // Default value
                 "Should the mod be able to detect if an enemy has been spawned by another player when hosting a lobby? (Only works if Detect enemy spawning is enabled)" // Description
             );
         }
