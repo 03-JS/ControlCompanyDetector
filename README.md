@@ -6,6 +6,8 @@ A fully configurable mod that gives you an in-game warning when a lobby host is 
 
 If the Detect Enemy Spawning option is enabled (which it is by default) and the host has spawned an enemy, the mod will give you a warning with the enemy's name.
 
+If you host a lobby, a different warning will appear to indicate that an enemy has been spawned by someone else. This means that enemies that have been spawned using cheats or other mods will be detected.
+
 Here's a full list of all the enemies the mod is able to detect:
 
 - Spore lizard
@@ -21,8 +23,5 @@ Here's a full list of all the enemies the mod is able to detect:
 - Jester
 - Lasso man
 
-Keep in mind that this feature doesn't only work with Control Company, as it will detect any enemy that has been spawned by any player as long as the enemy is in the list.
-This means that enemies that have been spawned using cheats or other mods will also be detected.
-
 **WARNING:**
-Any mods that alter how indoor enemies spawn will most likely cause this feature to not work properly
+Any mods that alter how indoor enemies spawn will cause this feature to not work properly
