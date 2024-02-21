@@ -43,10 +43,7 @@ namespace ControlCompanyDetector.Patches
                 }
                 else if (StartOfRound.Instance.IsHost)
                 {
-                    if (Plugin.detectEnemySpawningAsHost.Value)
-                    {
-                        DetectEnemySpawning(); 
-                    }
+                    DetectEnemySpawning();
                 }
                 else if (!Plugin.ignoreFriendlyLobbies.Value)
                 {
@@ -105,12 +102,12 @@ namespace ControlCompanyDetector.Patches
 
         internal static void DisplayEnemyMessage()
         {
-            Plugin.LogWarnMLS("An enemy has been manually spawned");
+            Plugin.LogWarnMLS("An enemy has spawned in an abnormal manner");
             if (Detector.hostHasCC)
             {
                 Detector.SendUITip("WARNING:", "The host has spawned a " + FormatEnemyName(spawnedEnemy.name), false);
             }
-            else
+            else if (StartOfRound.Instance.IsHost)
             {
                 Detector.SendUITip("WARNING:", "A " + FormatEnemyName(spawnedEnemy.name) + " has been spawned by a player", false);
             }

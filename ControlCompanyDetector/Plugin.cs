@@ -14,17 +14,16 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.2.0";
+        private const string modVersion = "3.2.1";
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
+        public static ConfigEntry<bool> showInfoMessage;
+        public static ConfigEntry<bool> hideControlCompanyLobbies;
         public static ConfigEntry<bool> detectEnemySpawning;
         public static ConfigEntry<bool> detectMaskedSpawning;
         public static ConfigEntry<bool> detectEnemySpawningAsHost;
-        public static ConfigEntry<bool> showDetectEnemySpawningAsHostMessage;
-        public static ConfigEntry<bool> showInfoMessage;
-        public static ConfigEntry<bool> hideControlCompanyLobbies;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
