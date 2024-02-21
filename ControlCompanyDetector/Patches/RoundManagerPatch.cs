@@ -23,11 +23,30 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void PatchUpdate()
         {
-            if (Plugin.detectEnemySpawning.Value && !StartOfRound.Instance.IsHost)
+            if (!StartOfRound.Instance.IsHost)
+            {
+                StartSpawnDetection();
+            }
+            else if (Plugin.detectEnemySpawningAsHost.Value)
+            {
+                StartSpawnDetection();
+            }
+        }
+
+        internal static void StartSpawnDetection()
+        {
+            if (Plugin.detectEnemySpawning.Value)
             {
                 if (!StartOfRound.Instance.IsClientFriendsWithHost())
                 {
                     DetectEnemySpawning();
+                }
+                else if (StartOfRound.Instance.IsHost)
+                {
+                    if (Plugin.detectEnemySpawningAsHost.Value)
+                    {
+                        DetectEnemySpawning(); 
+                    }
                 }
                 else if (!Plugin.ignoreFriendlyLobbies.Value)
                 {
@@ -45,10 +64,12 @@ namespace ControlCompanyDetector.Patches
             {
                 spawnedEnemy = enemies[0];
                 DetectIndoorsEnemySpawning();
-                DetectMaskedEnemySpawning();
-
+                if (Plugin.detectMaskedSpawning.Value)
+                {
+                    DetectMaskedEnemySpawning();
+                    previousMaskDeaths = maskDeaths;
+                }
                 previousOpenVentCount = EnemyVentPatch.openVentCount;
-                previousMaskDeaths = maskDeaths;
             }
 
             previousEnemyCount = enemyCount;
