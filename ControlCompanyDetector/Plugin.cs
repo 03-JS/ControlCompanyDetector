@@ -28,7 +28,8 @@ namespace ControlCompanyDetector
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
-        public static ConfigEntry<bool> showInfoMessages;
+        public static ConfigEntry<bool> showInfoMessage;
+        public static ConfigEntry<bool> showControlCompanyLobbiesOnly;
         public static ConfigEntry<bool> hideControlCompanyLobbies;
         public static ConfigEntry<bool> detectEnemySpawning;
         public static ConfigEntry<bool> detectMaskedSpawning;
@@ -57,7 +58,14 @@ namespace ControlCompanyDetector
             }
             else
             {
-                mls.LogWarning("Lobbies hosting Control Company will be shown");
+                if (showControlCompanyLobbiesOnly.Value)
+                {
+                    mls.LogWarning("Only lobbies hosting Control Company will be shown");
+                }
+                else
+                {
+                    mls.LogWarning("All lobbies will be shown");
+                }
             }
 
             PatchStuff();
@@ -76,25 +84,32 @@ namespace ControlCompanyDetector
 
         internal void GenerateConfigValues()
         {
-            ignoreFriendlyLobbies = Config.Bind(
-                "Lobby settings", // Config section
-                "Ignore friend lobbies", // Key of this config
+            showInfoMessage = Config.Bind(
+                "Hosting", // Config section
+                "Show info message", // Key of this config
                 true, // Default value
-                "Should the mod completely ignore lobbies created by friends?" // Description
-            );
-
-            showInfoMessages = Config.Bind(
-                "Lobby settings", // Config section
-                "Show info messages", // Key of this config
-                true, // Default value
-                "Set this to false if you want to hide the additional info messages that can appear" // Description
+                "Set this to false if you want to hide the additional info message that can appear when hosting a lobby" // Description
             );
 
             hideControlCompanyLobbies = Config.Bind(
-                "Lobby settings", // Config section
+                "Public Lobbies", // Config section
                 "Hide Control Company lobbies", // Key of this config
                 false, // Default value
                 "Hides lobbies hosting Control Company" // Description
+            );
+
+            showControlCompanyLobbiesOnly = Config.Bind(
+                "Public Lobbies", // Config section
+                "Only show Control Company lobbies", // Key of this config
+                false, // Default value
+                "Only shows lobbies hosting Control Company" // Description
+            );
+
+            ignoreFriendlyLobbies = Config.Bind(
+                "Private Lobbies", // Config section
+                "Ignore friend lobbies", // Key of this config
+                true, // Default value
+                "Should the mod completely ignore lobbies created by friends?" // Description
             );
 
             detectEnemySpawning = Config.Bind(
@@ -115,7 +130,7 @@ namespace ControlCompanyDetector
             detectEnemySpawningAsHost = Config.Bind(
                 "Spawn detection", // Config section
                 "Detect enemy spawning as host", // Key of this config
-                false, // Default value
+                true, // Default value
                 "Should the mod be able to detect if an enemy has been spawned by another player when hosting a lobby? (Only works if Detect enemy spawning is enabled)" // Description
             );
         }
@@ -126,7 +141,12 @@ namespace ControlCompanyDetector
                 "BrutalCompany",
                 "HullBreaker",
                 "MoreMonsters",
-                "MonstersPlus"
+                "MonstersPlus",
+                "SavageCompany",
+                "Lethal_Company_Variables",
+                "LethalHoardingSwarm",
+                "TitaniumTurbine.EnemySpawner",
+                "Waffle.MaskedWaves"
             };
         }
 

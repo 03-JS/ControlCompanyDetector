@@ -12,7 +12,10 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPrefix]
         static void CheckIfHostCanDetectEnemySpawning()
         {
-            Plugin.GetLoadedMods();
+            if (Plugin.detectEnemySpawningAsHost.Value)
+            {
+                Plugin.GetLoadedMods();
+            }
         }
     }
 }

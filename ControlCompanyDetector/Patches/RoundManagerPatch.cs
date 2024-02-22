@@ -23,9 +23,9 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void DisplayHostOnlyMsg()
         {
-            if (!Plugin.canHostDetectEnemySpawning && Plugin.showInfoMessages.Value && Plugin.detectEnemySpawningAsHost.Value)
+            if (!Plugin.canHostDetectEnemySpawning && Plugin.showInfoMessage.Value && Plugin.detectEnemySpawningAsHost.Value)
             {
-                CoroutineManager.StartCoroutine(Detector.SendDelayedUITip("Control Company Detector:", "Detect enemy spawning as host has been disabled because you have the following mod installed: " + Plugin.problematicPluginInfo.Metadata.Name, false, 3.5f));
+                CoroutineManager.StartCoroutine(Detector.SendDelayedUITip("Control Company Detector:", "<size=15>Detect enemy spawning as host has been disabled because you have the following mod installed:</size>\n" + Plugin.problematicPluginInfo.Metadata.Name + "", false, 3.5f));
             }
         }
 
