@@ -41,7 +41,7 @@ namespace ControlCompanyDetector.Logic
             {
                 Detector.Detect();
             }
-            else if (Plugin.showInfoMessage.Value)
+            else if (Plugin.showInfoMessages.Value)
             {
                 Detector.SendUITip("Control Company Detector:", "Lobbies created by friends are currently being ignored. Check the mod config for more info", false);
             }
@@ -78,6 +78,16 @@ namespace ControlCompanyDetector.Logic
         {
             // Player player = Player.Get(senderId);
             // HUDManagerPatch.displayTip = true;
+            Plugin.LogInfoMLS("Displaying HUD message");
+            HUDManager.Instance.DisplayTip(header, message, warning, false, "LC_Tip1");
+        }
+
+        public static IEnumerator SendDelayedUITip(string header, string message, bool warning, float delay)
+        {
+            Plugin.LogInfoMLS("Sending a delayed message...");
+
+            yield return new WaitForSeconds(delay);
+
             Plugin.LogInfoMLS("Displaying HUD message");
             HUDManager.Instance.DisplayTip(header, message, warning, false, "LC_Tip1");
         }

@@ -19,6 +19,16 @@ namespace ControlCompanyDetector.Patches
         internal static int previousMaskDeaths;
         internal static EnemyAI spawnedEnemy;
 
+        [HarmonyPatch("Awake")]
+        [HarmonyPostfix]
+        static void DisplayHostOnlyMsg()
+        {
+            if (!Plugin.canHostDetectEnemySpawning && Plugin.showInfoMessages.Value && Plugin.detectEnemySpawningAsHost.Value)
+            {
+                CoroutineManager.StartCoroutine(Detector.SendDelayedUITip("Control Company Detector:", "Detect enemy spawning as host has been disabled because you have the following mod installed: " + Plugin.problematicPluginInfo.Metadata.Name, false, 3.5f));
+            }
+        }
+
         [HarmonyPatch("Update")]
         [HarmonyPostfix]
         static void PatchUpdate()
@@ -27,7 +37,7 @@ namespace ControlCompanyDetector.Patches
             {
                 StartSpawnDetection();
             }
-            else if (Plugin.detectEnemySpawningAsHost.Value)
+            else if (Plugin.detectEnemySpawningAsHost.Value && Plugin.canHostDetectEnemySpawning)
             {
                 StartSpawnDetection();
             }

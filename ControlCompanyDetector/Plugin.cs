@@ -1,9 +1,13 @@
 ﻿using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using ControlCompanyDetector.Logic;
 using ControlCompanyDetector.Patches;
 using HarmonyLib;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Analytics;
 
@@ -14,12 +18,17 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.2.2";
+        private const string modVersion = "3.3.0";
+
+        // Plugin detection related
+        public static List<string> keywords;
+        public static bool canHostDetectEnemySpawning;
+        public static PluginInfo problematicPluginInfo;
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
-        public static ConfigEntry<bool> showInfoMessage;
+        public static ConfigEntry<bool> showInfoMessages;
         public static ConfigEntry<bool> hideControlCompanyLobbies;
         public static ConfigEntry<bool> detectEnemySpawning;
         public static ConfigEntry<bool> detectMaskedSpawning;
@@ -37,6 +46,7 @@ namespace ControlCompanyDetector
             }
 
             GenerateConfigValues();
+            GenerateKeywords();
 
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             mls.LogInfo("Control Company Detector has started");
@@ -61,6 +71,7 @@ namespace ControlCompanyDetector
             harmony.PatchAll(typeof(RoundManagerPatch));
             harmony.PatchAll(typeof(EnemyVentPatch));
             harmony.PatchAll(typeof(MaskedEnemyPatch));
+            harmony.PatchAll(typeof(MenuManagerPatch));
         }
 
         internal void GenerateConfigValues()
@@ -72,11 +83,11 @@ namespace ControlCompanyDetector
                 "Should the mod completely ignore lobbies created by friends?" // Description
             );
 
-            showInfoMessage = Config.Bind(
+            showInfoMessages = Config.Bind(
                 "Lobby settings", // Config section
-                "Show info message", // Key of this config
+                "Show info messages", // Key of this config
                 true, // Default value
-                "Set this to false if you want to hide the info message that appears when you join a friend's lobby and Ignore Friendly Lobbies is set to true" // Description
+                "Set this to false if you want to hide the additional info messages that can appear" // Description
             );
 
             hideControlCompanyLobbies = Config.Bind(
@@ -109,6 +120,36 @@ namespace ControlCompanyDetector
             );
         }
 
+        internal static void GenerateKeywords()
+        {
+            keywords = new List<string> {
+                "BrutalCompany",
+                "HullBreaker",
+                "MoreMonsters",
+                "MonstersPlus"
+            };
+        }
+
+        public static void GetLoadedMods()
+        {
+            canHostDetectEnemySpawning = true;
+            Dictionary<string, PluginInfo> Mods = Chainloader.PluginInfos;
+            mls.LogInfo("Getting currently loaded mods...");
+            foreach (PluginInfo info in Mods.Values)
+            {
+                foreach (string key in Plugin.keywords)
+                {
+                    if (info.Metadata.GUID.Contains(key))
+                    {
+                        mls.LogWarning("A mod that alters how enemies spawn has been detected!");
+                        canHostDetectEnemySpawning = false;
+                        problematicPluginInfo = info;
+                        return;
+                    }
+                }
+            }
+        }
+
         public static void LogInfoMLS(string info)
         {
             mls.LogInfo(info);
@@ -117,16 +158,6 @@ namespace ControlCompanyDetector
         public static void LogWarnMLS(string warn)
         {
             mls.LogWarning(warn);
-        }
-
-        public static IEnumerator SendDelayedUITip(string header, string message, bool warning)
-        {
-            mls.LogInfo("Sending a delayed message...");
-            
-            yield return new WaitForSeconds(3.5f);
-
-            mls.LogInfo("Displaying HUD message");
-            HUDManager.Instance.DisplayTip(header, message, warning, false, "LC_Tip1");
         }
     }
 }
