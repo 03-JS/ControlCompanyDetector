@@ -27,19 +27,28 @@ namespace ControlCompanyDetector.Patches
             }
             else
             {
+                if (Plugin.showControlCompanyLobbiesOnly.Value)
+                {
+                    List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
+                    list.RemoveAll(delegate (Lobby lobby)
+                    {
+                        string lobbyName = lobby.GetData("name");
+                        bool flag = lobbyName.Contains('\u200b');
+                        return !flag;
+                    });
+                    Lobby[] array = list.ToArray();
+                    ___currentLobbyList = array;
+                    lobbyList = array;
+                }
                 for (int i = 0; i < ___currentLobbyList.Length; i++)
                 {
                     Lobby lobby = ___currentLobbyList[i];
                     string lobbyName = lobby.GetData("name");
                     if (lobbyName.Contains('\u200b'))
                     {
-                        if (lobbyName.Contains("[CC]"))
+                        if (!lobbyName.Contains("[CC]"))
                         {
-                            lobbyName.Replace("[CC]", "[Control Company]" + lobbyName);
-                        }
-                        if (!lobbyName.Contains("[Control Company]"))
-                        {
-                            lobbyName = "[Control Company] " + lobbyName;
+                            lobbyName = "[CC] " + lobbyName;
                         }
                         lobby.SetData("name", lobbyName);
                     }
