@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using static UnityEngine.UIElements.UIR.Implementation.UIRStylePainter;
 
 namespace ControlCompanyDetector.Patches
 {
@@ -85,7 +86,7 @@ namespace ControlCompanyDetector.Patches
         internal static void DetectIndoorsEnemySpawning()
         {
             // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
-            if (!spawnedEnemy.enemyType.isOutsideEnemy && !spawnedEnemy.name.ToUpper().Contains("DRESSGIRL"))
+            if (IsEnemyTypeValid())
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
                 if (EnemyVentPatch.openVentCount <= previousOpenVentCount)
@@ -98,7 +99,7 @@ namespace ControlCompanyDetector.Patches
         internal static void DetectMaskedEnemySpawning()
         {
             // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
-            if (spawnedEnemy.name.ToUpper().Contains("MASK"))
+            if (spawnedEnemy.GetType() == typeof(MaskedPlayerEnemy))
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
                 // Plugin.LogInfoMLS("deaths: " + maskDeaths);
@@ -115,67 +116,76 @@ namespace ControlCompanyDetector.Patches
             Plugin.LogWarnMLS("An enemy has spawned in an abnormal manner");
             if (Detector.hostHasCC)
             {
-                Detector.SendUITip("WARNING:", "The host has spawned a " + FormatEnemyName(spawnedEnemy.name), false);
+                Detector.SendUITip("WARNING:", "The host has spawned a " + FormatEnemyName(spawnedEnemy), false);
             }
             else if (StartOfRound.Instance.IsHost)
             {
-                Detector.SendUITip("WARNING:", "A " + FormatEnemyName(spawnedEnemy.name) + " has been spawned by a player", false);
+                Detector.SendUITip("WARNING:", "A " + FormatEnemyName(spawnedEnemy) + " has been spawned by a player", false);
             }
         }
 
-        internal static string FormatEnemyName(string enemyName)
+        internal static string FormatEnemyName(EnemyAI enemy)
         {
-            enemyName = enemyName.ToUpper();
-            if (enemyName.Contains("FLOWER"))
+            if (enemy.GetType() == typeof(FlowermanAI))
             {
-                enemyName = "Bracken";
+                return "Bracken";
             }
-            if (enemyName.Contains("SPRING"))
+            if (enemy.GetType() == typeof(SpringManAI))
             {
-                enemyName = "Coil-Head";
+                return "Coil-Head";
             }
-            if (enemyName.Contains("BLOB"))
+            if (enemy.GetType() == typeof(BlobAI))
             {
-                enemyName = "Hygrodere";
+                return "Hygrodere";
             }
-            if (enemyName.Contains("PUFFER"))
+            if (enemy.GetType() == typeof(PufferAI))
             {
-                enemyName = "Spore Lizard";
+                return "Spore Lizard";
             }
-            if (enemyName.Contains("CRAWLER"))
+            if (enemy.GetType() == typeof(CrawlerAI))
             {
-                enemyName = "Thumper";
+                return "Thumper";
             }
-            if (enemyName.Contains("BUG"))
+            if (enemy.GetType() == typeof(HoarderBugAI))
             {
                 int randomNumber = UnityEngine.Random.Range(0, 4);
-                enemyName = randomNumber == 0 ? "Yippee Bug" : "Hoarding Bug";
+                return randomNumber == 0 ? "Yippee Bug" : "Hoarding Bug";
             }
-            if (enemyName.Contains("NUT"))
+            if (enemy.GetType() == typeof(NutcrackerEnemyAI))
             {
-                enemyName = "Nutcracker";
+                return "Nutcracker";
             }
-            if (enemyName.Contains("CENTIPEDE"))
+            if (enemy.GetType() == typeof(CentipedeAI))
             {
-                enemyName = "Snare Flea";
+                return "Snare Flea";
             }
-            if (enemyName.Contains("SPIDER"))
+            if (enemy.GetType() == typeof(SandSpiderAI))
             {
-                enemyName = "Bunker Spider";
+                return "Bunker Spider";
             }
-            if (enemyName.Contains("JESTER"))
+            if (enemy.GetType() == typeof(JesterAI))
             {
-                enemyName = "Jester";
+                return "Jester";
             }
-            if (enemyName.Contains("MASK"))
+            if (enemy.GetType() == typeof(MaskedPlayerEnemy))
             {
-                enemyName = "Masked Employee";
+                return "Masked Employee";
             }
-            if (enemyName.Contains("LASSO"))
+            if (enemy.GetType() == typeof(LassoManAI))
             {
-                enemyName = "Lasso Man";
+                return "Lasso Man";
             }
-            return enemyName;
+            return "[REDACTED]";
+        }
+
+        internal static bool IsEnemyTypeValid()
+        {
+            return spawnedEnemy.GetType() == typeof(FlowermanAI) || spawnedEnemy.GetType() == typeof(SpringManAI)
+                || spawnedEnemy.GetType() == typeof(BlobAI) || spawnedEnemy.GetType() == typeof(PufferAI)
+                || spawnedEnemy.GetType() == typeof(CrawlerAI) || spawnedEnemy.GetType() == typeof(HoarderBugAI)
+                || spawnedEnemy.GetType() == typeof(NutcrackerEnemyAI) || spawnedEnemy.GetType() == typeof(CentipedeAI)
+                || spawnedEnemy.GetType() == typeof(SandSpiderAI) || spawnedEnemy.GetType() == typeof(JesterAI)
+                || spawnedEnemy.GetType() == typeof(LassoManAI);
         }
     }
 }
