@@ -18,7 +18,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.3.1";
+        private const string modVersion = "3.3.2";
 
         // Plugin detection related
         public static List<string> keywords;
@@ -76,6 +76,7 @@ namespace ControlCompanyDetector
             harmony.PatchAll(typeof(Plugin));
             harmony.PatchAll(typeof(StartOfRoundPatch));
             harmony.PatchAll(typeof(LobbyListPatch));
+            harmony.PatchAll(typeof(LobbySlotPatch));
             harmony.PatchAll(typeof(RoundManagerPatch));
             harmony.PatchAll(typeof(EnemyVentPatch));
             harmony.PatchAll(typeof(MaskedEnemyPatch));
@@ -168,6 +169,20 @@ namespace ControlCompanyDetector
                     }
                 }
             }
+        }
+
+        public static bool UserHasCC()
+        {
+            Dictionary<string, PluginInfo> Mods = Chainloader.PluginInfos;
+            mls.LogInfo("Checking for Control Company...");
+            foreach (PluginInfo info in Mods.Values)
+            {
+                if (info.Metadata.GUID.Equals("ControlCompany.ControlCompany"))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static void LogInfoMLS(string info)
