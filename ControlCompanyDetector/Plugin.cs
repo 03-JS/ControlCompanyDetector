@@ -18,7 +18,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.3.3";
+        private const string modVersion = "3.3.4";
 
         // Plugin detection related
         public static List<string> keywords;
@@ -171,13 +171,13 @@ namespace ControlCompanyDetector
             }
         }
 
-        public static bool UserHasCC()
+        public static bool UserHasMod(string modGUID)
         {
             Dictionary<string, PluginInfo> Mods = Chainloader.PluginInfos;
-            mls.LogInfo("Checking for Control Company...");
+            mls.LogInfo("Checking for " + modGUID + "...");
             foreach (PluginInfo info in Mods.Values)
             {
-                if (info.Metadata.GUID.Equals("ControlCompany.ControlCompany"))
+                if (info.Metadata.GUID.Equals(modGUID))
                 {
                     return true;
                 }

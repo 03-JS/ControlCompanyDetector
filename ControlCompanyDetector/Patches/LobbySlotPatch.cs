@@ -24,7 +24,7 @@ namespace ControlCompanyDetector.Patches
         {
             yield return new WaitForEndOfFrame();
             bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
-            if (!Plugin.UserHasCC() && !challenge)
+            if (!Plugin.UserHasMod("ControlCompany.ControlCompany") && !challenge)
             {
                 Color outline = GetColorFromRGBA(158, 49, 72, 255);
                 Color joinHighlight = GetColorFromRGBA(210, 0, 72, 255);
@@ -32,12 +32,18 @@ namespace ControlCompanyDetector.Patches
                 Color slot = GetColorFromRGBA(158, 49, 72, 64);
                 // Color customTextColor = GetColorFromRGBA(183, 60, 89, 255);
                 Color customTextColor = GetColorFromRGBA(150, 60, 89, 255 / 2);
-                CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor);
+                if (Plugin.UserHasMod("Ryokune.BetterLobbies"))
+                {
+                    CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, true);
+                }
+                else
+                {
+                    CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, false);
+                }
             }
-
         }
 
-        internal static void CreateCustomSlot(LobbySlot lobbySlot, Color outline, Color joinHighlight, Color text, Color slot, Color customTextColor)
+        internal static void CreateCustomSlot(LobbySlot lobbySlot, Color outline, Color joinHighlight, Color text, Color slot, Color customTextColor, bool placeLeft)
         {
             string lobbyName = lobbySlot.thisLobby.GetData("name");
             if (lobbyName.Contains('\u200b'))
@@ -71,7 +77,14 @@ namespace ControlCompanyDetector.Patches
                 rectTransform.anchorMax = new Vector2(0f, 1f);
                 rectTransform.pivot = new Vector2(0f, 1f);
                 rectTransform.localScale = new Vector3(0.8497399f, 0.8497399f, 0.8497399f);
-                rectTransform.localPosition = new Vector3(180f, -15f, -7f);
+                if (placeLeft)
+                {
+                    rectTransform.localPosition = new Vector3(60f, -15f, -7f);
+                }
+                else
+                {
+                    rectTransform.localPosition = new Vector3(180f, -15f, -7f);
+                }
                 rectTransform.sizeDelta = new Vector2(170.5f, 24f);
             }
         }
