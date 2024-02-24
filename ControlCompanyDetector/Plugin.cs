@@ -18,7 +18,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.3.4";
+        private const string modVersion = "3.3.5";
 
         // Plugin detection related
         public static List<string> keywords;

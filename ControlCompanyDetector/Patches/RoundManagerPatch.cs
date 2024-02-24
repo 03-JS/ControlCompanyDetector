@@ -1,12 +1,6 @@
 ﻿using ControlCompanyDetector.Logic;
-using GameNetcodeStuff;
 using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using static UnityEngine.UIElements.UIR.Implementation.UIRStylePainter;
 
 namespace ControlCompanyDetector.Patches
 {
@@ -20,7 +14,7 @@ namespace ControlCompanyDetector.Patches
         internal static int previousMaskDeaths;
         internal static EnemyAI spawnedEnemy;
 
-        [HarmonyPatch("Awake")]
+        [HarmonyPatch("Start")]
         [HarmonyPostfix]
         static void DisplayHostOnlyMsg()
         {
@@ -31,7 +25,7 @@ namespace ControlCompanyDetector.Patches
         }
 
         [HarmonyPatch("Update")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         static void PatchUpdate()
         {
             if (!StartOfRound.Instance.IsHost)
@@ -85,7 +79,7 @@ namespace ControlCompanyDetector.Patches
 
         internal static void DetectIndoorsEnemySpawning()
         {
-            // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
+            // Plugin.LogInfoMLS("Spawned enemy name: " + spawnedEnemy.name);
             if (IsEnemyTypeValid())
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
