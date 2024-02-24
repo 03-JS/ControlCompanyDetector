@@ -72,7 +72,7 @@ namespace ControlCompanyDetector.Patches
                 rectTransform.pivot = new Vector2(0f, 1f);
                 rectTransform.localScale = new Vector3(0.8497399f, 0.8497399f, 0.8497399f);
                 rectTransform.localPosition = new Vector3(180f, -15f, -7f);
-                rectTransform.sizeDelta = new Vector2(269f, 24f);
+                rectTransform.sizeDelta = new Vector2(170.5f, 24f);
             }
         }
 
