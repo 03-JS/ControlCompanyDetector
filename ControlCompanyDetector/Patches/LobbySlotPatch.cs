@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Linq;
 using ControlCompanyDetector.Logic;
 using HarmonyLib;
 using TMPro;
@@ -23,8 +22,7 @@ namespace ControlCompanyDetector.Patches
         private static IEnumerator ModifySlot(LobbySlot lobbySlot)
         {
             yield return new WaitForEndOfFrame();
-            bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
-            if (!Plugin.UserHasMod("ControlCompany.ControlCompany") && !challenge)
+            if (!Plugin.clientHasCC)
             {
                 Color outline = GetColorFromRGBA(158, 49, 72, 255);
                 Color joinHighlight = GetColorFromRGBA(210, 0, 72, 255);
@@ -32,22 +30,23 @@ namespace ControlCompanyDetector.Patches
                 Color slot = GetColorFromRGBA(158, 49, 72, 64);
                 // Color customTextColor = GetColorFromRGBA(183, 60, 89, 255);
                 Color customTextColor = GetColorFromRGBA(150, 60, 89, 255 / 2);
-                if (Plugin.UserHasMod("Ryokune.BetterLobbies"))
-                {
-                    CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, true);
-                }
-                else
-                {
-                    CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, false);
-                }
+                CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, Plugin.clientHasRBL);
             }
         }
 
         internal static void CreateCustomSlot(LobbySlot lobbySlot, Color outline, Color joinHighlight, Color text, Color slot, Color customTextColor, bool placeLeft)
         {
+            bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
             string lobbyName = lobbySlot.thisLobby.GetData("name");
+            string prefix = Plugin.showCCLobbyPrefix.Value ? "[CC] " : "";
             if (lobbyName.Contains('\u200b'))
             {
+                if (challenge)
+                {
+                    lobbySlot.LobbyName.SetText("[CC] " + lobbyName);
+                    return;
+                }
+                lobbySlot.LobbyName.SetText(prefix + lobbyName);
                 Image outlineImage = lobbySlot.transform.Find("Outline")?.GetComponent<Image>();
                 Image joinButtonSelectionHighlight = lobbySlot.transform.Find("JoinButton/SelectionHighlight")?.GetComponent<Image>();
                 if ((bool)outlineImage)
@@ -77,13 +76,10 @@ namespace ControlCompanyDetector.Patches
                 rectTransform.anchorMax = new Vector2(0f, 1f);
                 rectTransform.pivot = new Vector2(0f, 1f);
                 rectTransform.localScale = new Vector3(0.8497399f, 0.8497399f, 0.8497399f);
+                rectTransform.localPosition = new Vector3(180f, -15f, -7f);
                 if (placeLeft)
                 {
                     rectTransform.localPosition = new Vector3(60f, -15f, -7f);
-                }
-                else
-                {
-                    rectTransform.localPosition = new Vector3(180f, -15f, -7f);
                 }
                 rectTransform.sizeDelta = new Vector2(170.5f, 24f);
             }

@@ -14,7 +14,7 @@ namespace ControlCompanyDetector.Patches
         {
             if (Plugin.detectEnemySpawningAsHost.Value)
             {
-                Plugin.GetLoadedMods();
+                Plugin.CheckProblematicMods();
             }
         }
     }

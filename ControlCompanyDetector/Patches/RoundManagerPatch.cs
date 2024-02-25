@@ -42,7 +42,7 @@ namespace ControlCompanyDetector.Patches
         {
             if (Plugin.detectEnemySpawning.Value)
             {
-                if (!StartOfRound.Instance.IsClientFriendsWithHost())
+                if (!Detector.clientIsFriendsWithHost)
                 {
                     DetectEnemySpawning();
                 }
@@ -142,7 +142,7 @@ namespace ControlCompanyDetector.Patches
             }
             if (enemy.GetType() == typeof(HoarderBugAI))
             {
-                int randomNumber = UnityEngine.Random.Range(0, 4);
+                int randomNumber = Random.Range(0, 4);
                 return randomNumber == 0 ? "Yippee Bug" : "Hoarding Bug";
             }
             if (enemy.GetType() == typeof(NutcrackerEnemyAI))

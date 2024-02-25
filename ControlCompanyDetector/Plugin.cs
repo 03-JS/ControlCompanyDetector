@@ -18,17 +18,20 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.3.5";
+        private const string modVersion = "3.3.6";
 
         // Plugin detection related
         public static List<string> keywords;
         public static bool canHostDetectEnemySpawning;
+        public static bool clientHasCC;
+        public static bool clientHasRBL;
         public static PluginInfo problematicPluginInfo;
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
         public static ConfigEntry<bool> showInfoMessage;
+        public static ConfigEntry<bool> showCCLobbyPrefix;
         public static ConfigEntry<bool> showControlCompanyLobbiesOnly;
         public static ConfigEntry<bool> hideControlCompanyLobbies;
         public static ConfigEntry<bool> detectEnemySpawning;
@@ -92,6 +95,14 @@ namespace ControlCompanyDetector
                 "Set this to false if you want to hide the additional info message that can appear when hosting a lobby" // Description
             );
 
+            showCCLobbyPrefix = Config.Bind(
+                "Public Lobbies", // Config section
+                "Show CC lobby prefix", // Key of this config
+                true, // Default value
+                "Lobbies that are certain to use Control Company will have the [CC] prefix in the lobby list\n" +
+                "NOTE: Challenge moon lobbies that have Control Company will always have the [CC] prefix" // Description
+            );
+
             hideControlCompanyLobbies = Config.Bind(
                 "Public Lobbies", // Config section
                 "Hide Control Company lobbies", // Key of this config
@@ -117,14 +128,14 @@ namespace ControlCompanyDetector
                 "Spawn detection", // Config section
                 "Detect enemy spawning", // Key of this config
                 true, // Default value
-                "Should the mod be able to detect if an enemy has been spawned by the host / a player? (Only works with indoor enemies)" // Description
+                "Should the mod be able to detect if an enemy has been spawned by the host? (Only works with indoor enemies)" // Description
             );
 
             detectMaskedSpawning = Config.Bind(
                 "Spawn detection", // Config section
                 "Detect Masked enemy spawning", // Key of this config
                 true, // Default value
-                "Should the mod be able to detect if a Masked enemy has been spawned by the host / a player?\n" +
+                "Should the mod be able to detect if a Masked enemy has been spawned by the host?\n" +
                 "Disable this if you're using mods that alter how Masked enemies spawn" // Description
             );
 
@@ -151,7 +162,7 @@ namespace ControlCompanyDetector
             };
         }
 
-        public static void GetLoadedMods()
+        public static void CheckProblematicMods()
         {
             canHostDetectEnemySpawning = true;
             Dictionary<string, PluginInfo> Mods = Chainloader.PluginInfos;

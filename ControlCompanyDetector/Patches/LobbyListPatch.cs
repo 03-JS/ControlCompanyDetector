@@ -12,6 +12,9 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPrefix]
         private static void FilterLobbyList(ref Lobby[] lobbyList, ref Lobby[] ___currentLobbyList)
         {
+            Plugin.clientHasCC = Plugin.UserHasMod("ControlCompany.ControlCompany");
+            Plugin.clientHasRBL = Plugin.UserHasMod("Ryokune.BetterLobbies");
+            
             if (Plugin.hideControlCompanyLobbies.Value)
             {
                 List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
@@ -24,35 +27,20 @@ namespace ControlCompanyDetector.Patches
                 Lobby[] array = list.ToArray();
                 ___currentLobbyList = array;
                 lobbyList = array;
+                return;
             }
-            else
+            if (Plugin.showControlCompanyLobbiesOnly.Value)
             {
-                if (Plugin.showControlCompanyLobbiesOnly.Value)
+                List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
+                list.RemoveAll(delegate (Lobby lobby)
                 {
-                    List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
-                    list.RemoveAll(delegate (Lobby lobby)
-                    {
-                        string lobbyName = lobby.GetData("name");
-                        bool flag = lobbyName.Contains('\u200b');
-                        return !flag;
-                    });
-                    Lobby[] array = list.ToArray();
-                    ___currentLobbyList = array;
-                    lobbyList = array;
-                }
-                for (int i = 0; i < ___currentLobbyList.Length; i++)
-                {
-                    Lobby lobby = ___currentLobbyList[i];
                     string lobbyName = lobby.GetData("name");
-                    if (lobbyName.Contains('\u200b'))
-                    {
-                        if (!lobbyName.Contains("[CC]"))
-                        {
-                            lobbyName = "[CC] " + lobbyName;
-                        }
-                        lobby.SetData("name", lobbyName);
-                    }
-                }
+                    bool flag = lobbyName.Contains('\u200b');
+                    return !flag;
+                });
+                Lobby[] array = list.ToArray();
+                ___currentLobbyList = array;
+                lobbyList = array;
             }
         }
     }
