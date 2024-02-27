@@ -24,5 +24,5 @@ Here's a full list of all the enemies the mod is able to detect:
 - Lasso man
 - Obunga
 
-**WARNING:**
+### WARNING:
 Any mods that alter how indoor enemies spawn will cause this feature to not work properly
