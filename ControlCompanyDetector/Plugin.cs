@@ -55,22 +55,6 @@ namespace ControlCompanyDetector
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
             mls.LogInfo("Control Company Detector has started");
 
-            if (hideControlCompanyLobbies.Value)
-            {
-                mls.LogWarning("Lobbies hosting Control Company will be hidden");
-            }
-            else
-            {
-                if (showControlCompanyLobbiesOnly.Value)
-                {
-                    mls.LogWarning("Only lobbies hosting Control Company will be shown");
-                }
-                else
-                {
-                    mls.LogWarning("All lobbies will be shown");
-                }
-            }
-
             PatchStuff();
         }
 
