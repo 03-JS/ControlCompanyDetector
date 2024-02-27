@@ -110,64 +110,70 @@ namespace ControlCompanyDetector.Patches
             Plugin.LogWarnMLS("An enemy has spawned in an abnormal manner");
             if (Detector.hostHasCC)
             {
-                Detector.SendUITip("WARNING:", "The host has spawned a " + FormatEnemyName(spawnedEnemy), false);
+                Detector.SendUITip("WARNING:", "The host has spawned " + FormatEnemyName(spawnedEnemy, false), false);
             }
             else if (StartOfRound.Instance.IsHost)
             {
-                Detector.SendUITip("WARNING:", "A " + FormatEnemyName(spawnedEnemy) + " has been spawned by a player", false);
+                Detector.SendUITip("WARNING:", FormatEnemyName(spawnedEnemy, true) + " has been spawned by a player", false);
             }
         }
 
-        internal static string FormatEnemyName(EnemyAI enemy)
+        internal static string FormatEnemyName(EnemyAI enemy, bool upper)
         {
+            string prefix = upper ? "A " : "a ";
             if (enemy.GetType() == typeof(FlowermanAI))
             {
-                return "Bracken";
+                return prefix + "Bracken";
             }
             if (enemy.GetType() == typeof(SpringManAI))
             {
-                return "Coil-Head";
+                return prefix + "Coil-Head";
             }
             if (enemy.GetType() == typeof(BlobAI))
             {
-                return "Hygrodere";
+                return prefix + "Hygrodere";
             }
             if (enemy.GetType() == typeof(PufferAI))
             {
-                return "Spore Lizard";
+                return prefix + "Spore Lizard";
             }
             if (enemy.GetType() == typeof(CrawlerAI))
             {
-                return "Thumper";
+                return prefix + "Thumper";
             }
             if (enemy.GetType() == typeof(HoarderBugAI))
             {
                 int randomNumber = Random.Range(0, 4);
-                return randomNumber == 0 ? "Yippee Bug" : "Hoarding Bug";
+                return randomNumber == 0 ? prefix + "Yippee Bug" : prefix + "Hoarding Bug";
             }
             if (enemy.GetType() == typeof(NutcrackerEnemyAI))
             {
-                return "Nutcracker";
+                return prefix + "Nutcracker";
             }
             if (enemy.GetType() == typeof(CentipedeAI))
             {
-                return "Snare Flea";
+                return prefix + "Snare Flea";
             }
             if (enemy.GetType() == typeof(SandSpiderAI))
             {
-                return "Bunker Spider";
+                return prefix + "Bunker Spider";
             }
             if (enemy.GetType() == typeof(JesterAI))
             {
-                return "Jester";
+                return prefix + "Jester";
             }
             if (enemy.GetType() == typeof(MaskedPlayerEnemy))
             {
-                return "Masked Employee";
+                return prefix + "Masked Employee";
             }
             if (enemy.GetType() == typeof(LassoManAI))
             {
-                return "Lasso Man";
+                return prefix + "Lasso Man";
+            }
+            if (enemy.GetType() == typeof(TestEnemy))
+            {
+                prefix = upper ? "An " : "an ";
+                return prefix + "Obunga";
             }
             return "[REDACTED]";
         }
@@ -179,7 +185,7 @@ namespace ControlCompanyDetector.Patches
                 || spawnedEnemy.GetType() == typeof(CrawlerAI) || spawnedEnemy.GetType() == typeof(HoarderBugAI)
                 || spawnedEnemy.GetType() == typeof(NutcrackerEnemyAI) || spawnedEnemy.GetType() == typeof(CentipedeAI)
                 || spawnedEnemy.GetType() == typeof(SandSpiderAI) || spawnedEnemy.GetType() == typeof(JesterAI)
-                || spawnedEnemy.GetType() == typeof(LassoManAI);
+                || spawnedEnemy.GetType() == typeof(LassoManAI) || spawnedEnemy.GetType() == typeof(TestEnemy);
         }
     }
 }
