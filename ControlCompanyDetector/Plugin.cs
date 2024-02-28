@@ -18,12 +18,12 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.3.7";
+        private const string modVersion = "3.3.8";
 
         // Plugin detection related
         public static List<string> keywords;
         public static bool canHostDetectEnemySpawning;
-        public static bool clientHasCC;
+        public static bool clientHasCCFilter;
         public static bool clientHasRBL;
         public static PluginInfo problematicPluginInfo;
 
@@ -32,6 +32,7 @@ namespace ControlCompanyDetector
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
         public static ConfigEntry<bool> showInfoMessage;
         public static ConfigEntry<bool> showCCLobbyPrefix;
+        public static ConfigEntry<bool> highlightCCLobbies;
         public static ConfigEntry<bool> showControlCompanyLobbiesOnly;
         public static ConfigEntry<bool> hideControlCompanyLobbies;
         public static ConfigEntry<bool> detectEnemySpawning;
@@ -87,6 +88,13 @@ namespace ControlCompanyDetector
                 "NOTE: Challenge moon lobbies that have Control Company will always have the [CC] prefix" // Description
             );
 
+            highlightCCLobbies = Config.Bind(
+                "Public Lobbies", // Config section
+                "Highlight Control Company lobbies", // Key of this config
+                true, // Default value
+                "Lobbies that are certain to use Control Company will be highlighted in the lobby list" // Description
+            );
+
             hideControlCompanyLobbies = Config.Bind(
                 "Public Lobbies", // Config section
                 "Hide Control Company lobbies", // Key of this config
@@ -102,7 +110,7 @@ namespace ControlCompanyDetector
             );
 
             ignoreFriendlyLobbies = Config.Bind(
-                "Private Lobbies", // Config section
+                "Public Lobbies", // Config section
                 "Ignore friend lobbies", // Key of this config
                 true, // Default value
                 "Should the mod completely ignore lobbies created by friends?" // Description

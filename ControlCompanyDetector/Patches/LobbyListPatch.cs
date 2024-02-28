@@ -12,7 +12,7 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPrefix]
         private static void FilterLobbyList(ref Lobby[] lobbyList, ref Lobby[] ___currentLobbyList)
         {
-            Plugin.clientHasCC = Plugin.UserHasMod("ControlCompany.ControlCompany");
+            Plugin.clientHasCCFilter =/* Plugin.UserHasMod("ControlCompany.ControlCompany") || */Plugin.UserHasMod("ControlCompany.ControlCompanyFilter");
             Plugin.clientHasRBL = Plugin.UserHasMod("Ryokune.BetterLobbies");
             
             if (Plugin.hideControlCompanyLobbies.Value)

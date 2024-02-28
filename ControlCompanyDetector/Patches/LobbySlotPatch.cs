@@ -22,7 +22,7 @@ namespace ControlCompanyDetector.Patches
         private static IEnumerator ModifySlot(LobbySlot lobbySlot)
         {
             yield return new WaitForEndOfFrame();
-            if (!Plugin.clientHasCC)
+            if (Plugin.highlightCCLobbies.Value)
             {
                 Color outline = GetColorFromRGBA(158, 49, 72, 255);
                 Color joinHighlight = GetColorFromRGBA(210, 0, 72, 255);
@@ -31,6 +31,18 @@ namespace ControlCompanyDetector.Patches
                 // Color customTextColor = GetColorFromRGBA(183, 60, 89, 255);
                 Color customTextColor = GetColorFromRGBA(150, 60, 89, 255 / 2);
                 CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, Plugin.clientHasRBL);
+            }
+            else if (Plugin.clientHasRBL && Plugin.clientHasCCFilter)
+            {
+                RectTransform[] rectTransforms = MonoBehaviour.FindObjectsOfType<RectTransform>();
+                foreach (RectTransform rectTransform in rectTransforms)
+                {
+                    if (rectTransform.gameObject.name.Equals("cc"))
+                    {
+                        rectTransform.localPosition = new Vector3(60f, -12.5f, -7f);
+                        rectTransform.sizeDelta = new Vector2(220f, 24f);
+                    }
+                }
             }
         }
 
@@ -63,6 +75,7 @@ namespace ControlCompanyDetector.Patches
                 numPlayersText.color = text;
                 Image lobbySlotImage = lobbySlot.GetComponent<Image>();
                 lobbySlotImage.color = slot;
+                MonoBehaviour.Destroy(GameObject.Find("cc"));
                 GameObject rectTransformGO = new GameObject("CCSlot", typeof(RectTransform));
                 RectTransform rectTransform = rectTransformGO.GetComponent<RectTransform>();
                 TextMeshProUGUI ccText = rectTransform.gameObject.AddComponent<TextMeshProUGUI>();
