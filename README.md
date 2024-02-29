@@ -9,7 +9,7 @@ A fully configurable mod that detects Control Company by giving you an in-game w
 
 If the Detect enemy spawning option is enabled (which it is by default) and the host has spawned an enemy, the mod will give you a warning with the enemy's name.
 
-Here's a full list of all the enemies the mod is able to detect:
+Here's a full list of all the enemies it can detect:
 
 - Spore lizard
 - Hoarding bug / Loot bug
