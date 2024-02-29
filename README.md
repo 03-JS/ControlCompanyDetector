@@ -78,6 +78,6 @@ In addition to all of this, Control Company Detector allows you to show all lobb
 
 ## In-game warning
 
-If Control Company Detector finds that the lobby host is using Control Company, an in-game warning will appear after when you join the lobby:
+If Control Company Detector finds that the lobby host is using Control Company, an in-game warning will appear when you join the lobby:
 
-![warning]()
+![warning](https://i.imgur.com/DORSRhv.png)
