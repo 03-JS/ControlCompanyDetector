@@ -20,6 +20,8 @@ namespace ControlCompanyDetector
         private const string modName = "Control Company Detector";
         private const string modVersion = "3.3.8";
 
+        public static string[] colors;
+
         // Plugin detection related
         public static List<string> keywords;
         public static bool canHostDetectEnemySpawning;
@@ -38,6 +40,7 @@ namespace ControlCompanyDetector
         public static ConfigEntry<bool> detectEnemySpawning;
         public static ConfigEntry<bool> detectMaskedSpawning;
         public static ConfigEntry<bool> detectEnemySpawningAsHost;
+        public static ConfigEntry<string> lobbyHighlightColor;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -50,6 +53,7 @@ namespace ControlCompanyDetector
                 Instance = this;
             }
 
+            GenerateColors();
             GenerateConfigValues();
             GenerateKeywords();
 
@@ -95,6 +99,13 @@ namespace ControlCompanyDetector
                 "Lobbies that are certain to use Control Company will be highlighted in the lobby list" // Description
             );
 
+            lobbyHighlightColor = Config.Bind(
+                "Public Lobbies", // Config section
+                "Lobby highlight color", // Key of this config
+                "DEFAULT", // Default value
+                new ConfigDescription("Changes the color of highlighted lobbies", new AcceptableValueList<string>(colors)) // Description
+            );
+
             hideControlCompanyLobbies = Config.Bind(
                 "Public Lobbies", // Config section
                 "Hide Control Company lobbies", // Key of this config
@@ -110,7 +121,7 @@ namespace ControlCompanyDetector
             );
 
             ignoreFriendlyLobbies = Config.Bind(
-                "Public Lobbies", // Config section
+                "Private Lobbies", // Config section
                 "Ignore friend lobbies", // Key of this config
                 true, // Default value
                 "Should the mod completely ignore lobbies created by friends?" // Description
@@ -151,6 +162,27 @@ namespace ControlCompanyDetector
                 "LethalHoardingSwarm",
                 "TitaniumTurbine.EnemySpawner",
                 "Waffle.MaskedWaves"
+            };
+        }
+
+        internal static void GenerateColors()
+        {
+            colors = new string[]{
+                "DEFAULT",
+                "RANDOM",
+                // "RED",
+                "GREEN",
+                "LIME",
+                "BLUE",
+                // "ORANGE",
+                "CYAN",
+                "PINK",
+                "PURPLE",
+                // "MAGENTA",
+                "YELLOW",
+                "GRAY",
+                "GREY",
+                "MAROON"
             };
         }
 

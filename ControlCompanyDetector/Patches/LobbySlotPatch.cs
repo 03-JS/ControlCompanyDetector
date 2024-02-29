@@ -9,6 +9,12 @@ namespace ControlCompanyDetector.Patches
     [HarmonyPatch(typeof(LobbySlot))]
     internal class LobbySlotPatch
     {
+        private static Color outline;
+        private static Color joinHighlight;
+        private static Color text;
+        private static Color slot;
+        private static Color customTextColor;
+
         [HarmonyPatch("Awake")]
         [HarmonyPostfix]
         static void AwakePatch(LobbySlot __instance)
@@ -19,17 +25,13 @@ namespace ControlCompanyDetector.Patches
             }
         }
 
-        private static IEnumerator ModifySlot(LobbySlot lobbySlot)
+        internal static IEnumerator ModifySlot(LobbySlot lobbySlot)
         {
             yield return new WaitForEndOfFrame();
+            AddCCPrefix(lobbySlot);
             if (Plugin.highlightCCLobbies.Value)
             {
-                Color outline = GetColorFromRGBA(158, 49, 72, 255);
-                Color joinHighlight = GetColorFromRGBA(210, 0, 72, 255);
-                Color text = GetColorFromRGBA(205, 71, 100, 255);
-                Color slot = GetColorFromRGBA(158, 49, 72, 64);
-                // Color customTextColor = GetColorFromRGBA(183, 60, 89, 255);
-                Color customTextColor = GetColorFromRGBA(150, 60, 89, 255 / 2);
+                ChangeHighlightColor(Plugin.lobbyHighlightColor.Value);
                 CreateCustomSlot(lobbySlot, outline, joinHighlight, text, slot, customTextColor, Plugin.clientHasRBL);
             }
             else if (Plugin.clientHasRBL && Plugin.clientHasCCFilter)
@@ -46,11 +48,10 @@ namespace ControlCompanyDetector.Patches
             }
         }
 
-        internal static void CreateCustomSlot(LobbySlot lobbySlot, Color outline, Color joinHighlight, Color text, Color slot, Color customTextColor, bool placeLeft)
+        internal static void AddCCPrefix(LobbySlot lobbySlot)
         {
             bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
             string lobbyName = lobbySlot.thisLobby.GetData("name");
-            string prefix = Plugin.showCCLobbyPrefix.Value ? "[CC] " : "";
             if (lobbyName.Contains('\u200b'))
             {
                 if (challenge)
@@ -58,7 +59,21 @@ namespace ControlCompanyDetector.Patches
                     lobbySlot.LobbyName.SetText("[CC] " + lobbyName);
                     return;
                 }
+                string prefix = Plugin.showCCLobbyPrefix.Value ? "[CC] " : "";
                 lobbySlot.LobbyName.SetText(prefix + lobbyName);
+            }
+        }
+
+        internal static void CreateCustomSlot(LobbySlot lobbySlot, Color outline, Color joinHighlight, Color text, Color slot, Color customTextColor, bool placeLeft)
+        {
+            bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
+            string lobbyName = lobbySlot.thisLobby.GetData("name");
+            if (challenge)
+            {
+                return;
+            }
+            if (lobbyName.Contains('\u200b'))
+            {
                 Image outlineImage = lobbySlot.transform.Find("Outline")?.GetComponent<Image>();
                 Image joinButtonSelectionHighlight = lobbySlot.transform.Find("JoinButton/SelectionHighlight")?.GetComponent<Image>();
                 if ((bool)outlineImage)
@@ -98,10 +113,113 @@ namespace ControlCompanyDetector.Patches
             }
         }
 
-        private static Color GetColorFromRGBA(int r, int b, int g, int a)
+        private static Color GetColorFromRGBA(float r, float b, float g, float a)
         {
-            return new Color((float)r / 255f, (float)b / 255f, (float)g / 255f, (float)a / 255f);
+            return new Color(r / 255f, b / 255f, g / 255f, a / 255f);
         }
 
+        internal static void ChangeHighlightColor(string preset)
+        {
+            if (preset.Equals("RANDOM"))
+            {
+                int randomNumber = Random.Range(2, Plugin.colors.Length);
+                preset = Plugin.colors[randomNumber];
+            }
+            switch (preset)
+            {
+                //case "RED":
+                //    outline = GetColorFromRGBA(230, 0, 0, 255);
+                //    joinHighlight = GetColorFromRGBA(255, 0, 0, 255);
+                //    text = GetColorFromRGBA(255, 0, 0, 255);
+                //    slot = GetColorFromRGBA(105, 0, 0, 64);
+                //    customTextColor = GetColorFromRGBA(190, 0, 0, 255 / 2);
+                //    break;
+                case "BLUE":
+                    outline = GetColorFromRGBA(0, 0, 255, 255);
+                    joinHighlight = GetColorFromRGBA(50, 50, 255, 255);
+                    text = GetColorFromRGBA(100, 100, 255, 255);
+                    slot = GetColorFromRGBA(0, 0, 125, 64);
+                    customTextColor = GetColorFromRGBA(0, 0, 175, 255 / 2);
+                    break;
+                case "GREEN":
+                    outline = GetColorFromRGBA(0, 155, 0, 255);
+                    joinHighlight = GetColorFromRGBA(0, 165, 0, 255);
+                    text = GetColorFromRGBA(0, 175, 0, 255);
+                    slot = GetColorFromRGBA(0, 90, 0, 64);
+                    customTextColor = GetColorFromRGBA(0, 120, 0, 255 / 2);
+                    break;
+                case "LIME":
+                    outline = GetColorFromRGBA(0, 235, 0, 235);
+                    joinHighlight = GetColorFromRGBA(20, 235, 20, 255);
+                    text = GetColorFromRGBA(70, 235, 70, 255);
+                    slot = GetColorFromRGBA(0, 125, 0, 64);
+                    customTextColor = GetColorFromRGBA(0, 175, 0, 255 / 2);
+                    break;
+                //case "ORANGE":
+                //    outline = GetColorFromRGBA(255, 102, 0, 255);
+                //    joinHighlight = GetColorFromRGBA(255, 133, 51, 255);
+                //    text = GetColorFromRGBA(255, 148, 77, 255);
+                //    slot = GetColorFromRGBA(153, 61, 0, 64);
+                //    customTextColor = GetColorFromRGBA(180, 80, 0, 255 / 2);
+                //    break;
+                case "CYAN":
+                    outline = GetColorFromRGBA(0, 235, 235, 235);
+                    joinHighlight = GetColorFromRGBA(72, 235, 235, 255);
+                    text = GetColorFromRGBA(98, 235, 235, 255);
+                    slot = GetColorFromRGBA(0, 130, 130, 64);
+                    customTextColor = GetColorFromRGBA(0, 170, 170, 255 / 2);
+                    break;
+                case "PINK":
+                    outline = GetColorFromRGBA(232, 136, 220, 255);
+                    joinHighlight = GetColorFromRGBA(232, 145, 222, 255);
+                    text = GetColorFromRGBA(233, 161, 223, 255);
+                    slot = GetColorFromRGBA(252, 156, 240, 15);
+                    customTextColor = GetColorFromRGBA(252, 165, 242, 255 / 4);
+                    break;
+                case "PURPLE":
+                    outline = GetColorFromRGBA(255, 35, 255, 255);
+                    joinHighlight = GetColorFromRGBA(255, 85, 255, 255);
+                    text = GetColorFromRGBA(255, 90, 255, 255);
+                    slot = GetColorFromRGBA(145, 0, 145, 64);
+                    customTextColor = GetColorFromRGBA(190, 0, 190, 255 / 2);
+                    break;
+                //case "MAGENTA":
+                //    outline = GetColorFromRGBA(235, 0, 114, 255);
+                //    joinHighlight = GetColorFromRGBA(235, 30, 150, 255);
+                //    text = GetColorFromRGBA(235, 40, 140, 255);
+                //    slot = GetColorFromRGBA(150, 0, 90, 64);
+                //    customTextColor = GetColorFromRGBA(175, 0, 100, 255 / 2);
+                //    break;
+                case "YELLOW":
+                    outline = GetColorFromRGBA(235, 235, 0, 255);
+                    joinHighlight = GetColorFromRGBA(235, 235, 75, 255);
+                    text = GetColorFromRGBA(235, 235, 85, 255);
+                    slot = GetColorFromRGBA(125, 125, 0, 64);
+                    customTextColor = GetColorFromRGBA(165, 165, 0, 255 / 2);
+                    break;
+                case "GRAY":
+                case "GREY":
+                    outline = GetColorFromRGBA(128, 128, 128, 255);
+                    joinHighlight = GetColorFromRGBA(158, 158, 158, 255);
+                    text = GetColorFromRGBA(168, 168, 168, 255);
+                    slot = GetColorFromRGBA(75, 75, 75, 64);
+                    customTextColor = GetColorFromRGBA(100, 100, 100, 255 / 2);
+                    break;
+                case "MAROON":
+                    outline = GetColorFromRGBA(158, 49, 72, 255);
+                    joinHighlight = GetColorFromRGBA(210, 0, 72, 255);
+                    text = GetColorFromRGBA(205, 71, 100, 255);
+                    slot = GetColorFromRGBA(158, 49, 72, 64);
+                    customTextColor = GetColorFromRGBA(150, 60, 89, 255 / 2);
+                    break;
+                default:
+                    outline = GetColorFromRGBA(158, 49, 72, 255);
+                    joinHighlight = GetColorFromRGBA(210, 0, 72, 255);
+                    text = GetColorFromRGBA(205, 71, 100, 255);
+                    slot = GetColorFromRGBA(158, 49, 72, 64);
+                    customTextColor = GetColorFromRGBA(150, 60, 89, 255 / 2);
+                    break;
+            }
+        }
     }
 }
