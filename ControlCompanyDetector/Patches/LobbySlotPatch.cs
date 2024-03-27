@@ -1,14 +1,21 @@
 ﻿using System.Collections;
+using System.Linq;
 using ControlCompanyDetector.Logic;
 using HarmonyLib;
+using LobbyCompatibility.Features;
+using LobbyCompatibility.Models;
+using Steamworks.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Color = UnityEngine.Color;
+using Image = UnityEngine.UI.Image;
 namespace ControlCompanyDetector.Patches
 {
     [HarmonyPatch(typeof(LobbySlot))]
     internal class LobbySlotPatch
     {
+        private static LobbyDiff lobbyDiff;
         private static Color outline;
         private static Color joinHighlight;
         private static Color text;
@@ -28,6 +35,7 @@ namespace ControlCompanyDetector.Patches
         internal static IEnumerator ModifySlot(LobbySlot lobbySlot)
         {
             yield return new WaitForEndOfFrame();
+            lobbyDiff = LobbyHelper.GetLobbyDiff(lobbySlot.thisLobby);
             AddCCPrefix(lobbySlot);
             if (Plugin.highlightCCLobbies.Value)
             {
@@ -52,7 +60,20 @@ namespace ControlCompanyDetector.Patches
         {
             bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
             string lobbyName = lobbySlot.thisLobby.GetData("name");
-            if (lobbyName.Contains('\u200b'))
+            if (lobbyDiff.PluginDiffs.Any(diff => diff.ServerVersion != null))
+            {
+                if (lobbyDiff.PluginDiffs.Any(diff => diff.GUID == "ControlCompany.ControlCompany"))
+                {
+                    if (challenge)
+                    {
+                        lobbySlot.LobbyName.SetText("[CC] " + lobbyName);
+                        return;
+                    }
+                    string prefix = Plugin.showCCLobbyPrefix.Value ? "[CC] " : "";
+                    lobbySlot.LobbyName.SetText(prefix + lobbyName);
+                }
+            }
+            else if (lobbyName.Contains('\u200b'))
             {
                 if (challenge)
                 {
@@ -66,51 +87,61 @@ namespace ControlCompanyDetector.Patches
 
         internal static void CreateCustomSlot(LobbySlot lobbySlot, Color outline, Color joinHighlight, Color text, Color slot, Color customTextColor, bool placeLeft)
         {
-            bool challenge = ((Object)((Component)lobbySlot).transform).name.Contains("Challenge");
-            string lobbyName = lobbySlot.thisLobby.GetData("name");
-            if (challenge)
+            if (!((Object)((Component)lobbySlot).transform).name.Contains("Challenge"))
             {
-                return;
+                string lobbyName = lobbySlot.thisLobby.GetData("name");
+                if (lobbyDiff.PluginDiffs.Any(diff => diff.ServerVersion != null))
+                {
+                    if (lobbyDiff.PluginDiffs.Any(diff => diff.GUID == "ControlCompany.ControlCompany"))
+                    {
+                        CreateSlotComponents(lobbySlot, placeLeft);
+                    }
+                }
+                else if (lobbyName.Contains('\u200b'))
+                {
+                    CreateSlotComponents(lobbySlot, placeLeft);
+                }
             }
-            if (lobbyName.Contains('\u200b'))
+        }
+
+        private static void CreateSlotComponents(LobbySlot lobbySlot, bool placeLeft)
+        {
+            Image outlineImage = lobbySlot.transform.Find("Outline")?.GetComponent<Image>();
+            Image joinButtonSelectionHighlight = lobbySlot.transform.Find("JoinButton/SelectionHighlight")?.GetComponent<Image>();
+            if ((bool)outlineImage)
             {
-                Image outlineImage = lobbySlot.transform.Find("Outline")?.GetComponent<Image>();
-                Image joinButtonSelectionHighlight = lobbySlot.transform.Find("JoinButton/SelectionHighlight")?.GetComponent<Image>();
-                if ((bool)outlineImage)
-                {
-                    outlineImage.color = outline;
-                }
-                if ((bool)joinButtonSelectionHighlight)
-                {
-                    joinButtonSelectionHighlight.color = joinHighlight;
-                }
-                TextMeshProUGUI serverNameText = lobbySlot.LobbyName;
-                TextMeshProUGUI numPlayersText = lobbySlot.playerCount;
-                serverNameText.color = text;
-                numPlayersText.color = text;
-                Image lobbySlotImage = lobbySlot.GetComponent<Image>();
-                lobbySlotImage.color = slot;
-                MonoBehaviour.Destroy(GameObject.Find("cc"));
-                GameObject rectTransformGO = new GameObject("CCSlot", typeof(RectTransform));
-                RectTransform rectTransform = rectTransformGO.GetComponent<RectTransform>();
-                TextMeshProUGUI ccText = rectTransform.gameObject.AddComponent<TextMeshProUGUI>();
-                ccText.fontSize = 21f;
-                ccText.text = "CONTROL COMPANY";
-                ccText.alignment = TextAlignmentOptions.MidlineLeft;
-                ccText.font = numPlayersText.font;
-                ccText.color = customTextColor;
-                rectTransform.SetParent(lobbySlot.transform);
-                rectTransform.anchorMin = new Vector2(0f, 1f);
-                rectTransform.anchorMax = new Vector2(0f, 1f);
-                rectTransform.pivot = new Vector2(0f, 1f);
-                rectTransform.localScale = new Vector3(0.8497399f, 0.8497399f, 0.8497399f);
-                rectTransform.localPosition = new Vector3(180f, -15f, -7f);
-                if (placeLeft)
-                {
-                    rectTransform.localPosition = new Vector3(60f, -15f, -7f);
-                }
-                rectTransform.sizeDelta = new Vector2(170.5f, 24f);
+                outlineImage.color = outline;
             }
+            if ((bool)joinButtonSelectionHighlight)
+            {
+                joinButtonSelectionHighlight.color = joinHighlight;
+            }
+            TextMeshProUGUI serverNameText = lobbySlot.LobbyName;
+            TextMeshProUGUI numPlayersText = lobbySlot.playerCount;
+            serverNameText.color = text;
+            numPlayersText.color = text;
+            Image lobbySlotImage = lobbySlot.GetComponent<Image>();
+            lobbySlotImage.color = slot;
+            MonoBehaviour.Destroy(GameObject.Find("cc"));
+            GameObject rectTransformGO = new GameObject("CCSlot", typeof(RectTransform));
+            RectTransform rectTransform = rectTransformGO.GetComponent<RectTransform>();
+            TextMeshProUGUI ccText = rectTransform.gameObject.AddComponent<TextMeshProUGUI>();
+            ccText.fontSize = 21f;
+            ccText.text = "CONTROL COMPANY";
+            ccText.alignment = TextAlignmentOptions.MidlineLeft;
+            ccText.font = numPlayersText.font;
+            ccText.color = customTextColor;
+            rectTransform.SetParent(lobbySlot.transform);
+            rectTransform.anchorMin = new Vector2(0f, 1f);
+            rectTransform.anchorMax = new Vector2(0f, 1f);
+            rectTransform.pivot = new Vector2(0f, 1f);
+            rectTransform.localScale = new Vector3(0.8497399f, 0.8497399f, 0.8497399f);
+            rectTransform.localPosition = new Vector3(180f, -15f, -7f);
+            if (placeLeft)
+            {
+                rectTransform.localPosition = new Vector3(60f, -15f, -7f);
+            }
+            rectTransform.sizeDelta = new Vector2(170.5f, 24f);
         }
 
         private static Color GetColorFromRGBA(float r, float b, float g, float a)

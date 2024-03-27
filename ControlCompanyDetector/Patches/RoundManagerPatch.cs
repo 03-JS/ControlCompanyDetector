@@ -1,6 +1,8 @@
 ﻿using ControlCompanyDetector.Logic;
 using HarmonyLib;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace ControlCompanyDetector.Patches
 {
@@ -18,9 +20,9 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void DisplayHostOnlyMsg()
         {
-            if (!Plugin.canHostDetectEnemySpawning && Plugin.showInfoMessage.Value && Plugin.detectEnemySpawningAsHost.Value)
+            if (!Plugin.canHostDetectEnemySpawning /* && Plugin.showInfoMessage.Value */ && Plugin.detectEnemySpawningAsHost.Value && StartOfRound.Instance.IsHost)
             {
-                CoroutineManager.StartCoroutine(Detector.SendDelayedUITip("Control Company Detector:", "<size=15>Detect enemy spawning as host has been disabled because you have the following mod installed:</size>\n" + Plugin.problematicPluginInfo.Metadata.Name + "", false, 3.5f));
+                CoroutineManager.StartCoroutine(Detector.SendDelayedUITip("Control Company Detector:", "<size=15>Detect enemy spawning as host has been disabled because you have the following mod installed:</size>\n" + Plugin.problematicPluginInfo.Metadata.Name, false, 3.5f));
             }
         }
 
@@ -30,7 +32,10 @@ namespace ControlCompanyDetector.Patches
         {
             if (!StartOfRound.Instance.IsHost)
             {
-                StartSpawnDetection();
+                if (Detector.canClientDetectEnemySpawning)
+                {
+                    StartSpawnDetection();
+                }
             }
             else if (Plugin.detectEnemySpawningAsHost.Value && Plugin.canHostDetectEnemySpawning)
             {
@@ -65,12 +70,9 @@ namespace ControlCompanyDetector.Patches
             if (enemyCount > previousEnemyCount)
             {
                 spawnedEnemy = enemies[0];
+                // Plugin.LogWarnMLS("AN ENEMY HAS SPAWNED!!! - Enemy name -> " + spawnedEnemy.name);
                 DetectIndoorsEnemySpawning();
-                if (Plugin.detectMaskedSpawning.Value)
-                {
-                    DetectMaskedEnemySpawning();
-                    previousMaskDeaths = maskDeaths;
-                }
+                // DetectAllEnemySpawning();
                 previousOpenVentCount = EnemyVentPatch.openVentCount;
             }
 
@@ -79,7 +81,6 @@ namespace ControlCompanyDetector.Patches
 
         internal static void DetectIndoorsEnemySpawning()
         {
-            // Plugin.LogInfoMLS("Spawned enemy name: " + spawnedEnemy.name);
             if (IsEnemyTypeValid())
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
@@ -88,11 +89,14 @@ namespace ControlCompanyDetector.Patches
                     DisplayEnemyMessage();
                 }
             }
+            else if (Plugin.detectMaskedSpawning.Value)
+            {
+                DetectMaskedEnemySpawning();
+            }
         }
 
         internal static void DetectMaskedEnemySpawning()
         {
-            // Debug.Log("Spawned enemy name: " + spawnedEnemy.name);
             if (spawnedEnemy.GetType() == typeof(MaskedPlayerEnemy))
             {
                 // Plugin.LogInfoMLS("openVentCount: " + EnemyVentPatch.openVentCount);
@@ -103,6 +107,7 @@ namespace ControlCompanyDetector.Patches
                     DisplayEnemyMessage();
                 }
             }
+            previousMaskDeaths = maskDeaths;
         }
 
         internal static void DisplayEnemyMessage()
@@ -175,7 +180,7 @@ namespace ControlCompanyDetector.Patches
                 prefix = upper ? "An " : "an ";
                 return prefix + "Obunga";
             }
-            return "[REDACTED]";
+            return prefix + "[REDACTED]";
         }
 
         internal static bool IsEnemyTypeValid()

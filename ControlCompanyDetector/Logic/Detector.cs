@@ -1,35 +1,21 @@
-﻿using BepInEx;
-using BepInEx.Bootstrap;
-using System.IO;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
-using ControlCompanyDetector.Patches;
-using static UnityEngine.Scripting.GarbageCollector;
-using System;
+using LobbyCompatibility.Models;
+using LobbyCompatibility.Features;
 using System.Linq;
-using Unity.Netcode;
+using HarmonyLib;
+using Steamworks;
 
 namespace ControlCompanyDetector.Logic
 {
     internal static class Detector
     {
-        // private static Dictionary<string, PluginInfo> Mods = new Dictionary<string, PluginInfo>();
-        // private static int previousLastCCLine;
         public static bool hostHasCC;
         public static bool clientIsFriendsWithHost;
+        public static bool canClientDetectEnemySpawning;
 
         public static IEnumerator StartDetection()
         {
-            //HUDManagerPatch.displayTip = false;
-            //if (Player.LocalPlayer == null)
-            //{
-            //    Mods = Chainloader.PluginInfos;
-            //    Plugin.LogInfoMLS("Starting detection...");
-            //    Network.Broadcast("LC_API_ReqGUID");
-            //    CoroutineManager.StartCoroutine(ReadBepinLog());
-            //}
-
             Plugin.LogInfoMLS("Checking if host and client are friends...");
 
             yield return new WaitForSeconds(3.5f);
@@ -50,25 +36,59 @@ namespace ControlCompanyDetector.Logic
         {
             Plugin.LogInfoMLS("Detection started");
             Plugin.LogInfoMLS("Lobby name: " + GameNetworkManager.Instance.steamLobbyName);
+            hostHasCC = false;
+            canClientDetectEnemySpawning = true;
             if (GameNetworkManager.Instance != null)
             {
-                if (GameNetworkManager.Instance.steamLobbyName.Contains('\u200b'))
+                bool lobbyHasValue = GameNetworkManager.Instance.currentLobby.HasValue;
+                Plugin.LogInfoMLS("Is the lobby a steam lobby? -> " + lobbyHasValue);
+                if (lobbyHasValue)
                 {
-                    hostHasCC = true;
-                    Plugin.LogWarnMLS("Control Company has been detected");
-                    Detector.SendUITip("WARNING:", "The host is using Control Company", true);
+                    LobbyDiff lobbyDiff = LobbyHelper.GetLobbyDiff(GameNetworkManager.Instance.currentLobby.GetValueOrDefault());
+                    if (lobbyDiff.PluginDiffs.Any(diff => diff.ServerVersion != null))
+                    {
+                        if (lobbyDiff.PluginDiffs.Any(diff => diff.GUID == "ControlCompany.ControlCompany"))
+                        {
+                            DisplayWarning();
+                        }
+                        foreach (var diff in lobbyDiff.PluginDiffs)
+                        {
+                            foreach (var key in Plugin.keywords)
+                            {
+                                if (diff.GUID.Contains(key))
+                                {
+                                    canClientDetectEnemySpawning = false;
+                                    Plugin.LogWarnMLS("The host is using a mod that alters enemy spawning!");
+                                    Detector.SendUITip("Control Company Detector:", "<size=15>Detect enemy spawning has been disabled because the host has the following mod installed:</size>\n" + diff.GUID, false);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (GameNetworkManager.Instance.steamLobbyName.Contains('\u200b'))
+                        {
+                            DisplayWarning();
+                        }
+                    }
                 }
-                else
-                {
-                    hostHasCC = false;
-                }
+            }
+        }
+
+        internal static void DisplayWarning()
+        {
+            hostHasCC = true;
+            Plugin.LogWarnMLS("Control Company has been detected!");
+            Detector.SendUITip("WARNING:", "The host is using Control Company", true);
+            if (Plugin.sendChatMessage.Value)
+            {
+                HUDManager.Instance.AddTextToChatOnServer("<color=#FF0000>" + "Control Company Detector" + "</color>:" + "<color=#FFFF00> Hey! " + RoundManager.Instance.playersManager.allPlayerScripts[0].playerUsername + " is using Control Company!" + "</color>");
             }
         }
 
         internal static void SendUITip(string header, string message, bool warning)
         {
-            // Player player = Player.Get(senderId);
-            // HUDManagerPatch.displayTip = true;
             Plugin.LogInfoMLS("Displaying HUD message");
             HUDManager.Instance.DisplayTip(header, message, warning, false, "LC_Tip1");
         }

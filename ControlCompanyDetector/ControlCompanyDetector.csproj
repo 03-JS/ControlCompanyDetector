@@ -51,6 +51,9 @@
 	  <Reference Include="BepInEx">
 	    <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\BepInEx\core\BepInEx.dll</HintPath>
 	  </Reference>
+	  <Reference Include="BMX.LobbyCompatibility">
+	    <HintPath>..\..\..\Lobby Compatibility\BepInEx\plugins\LobbyCompatibility\BMX.LobbyCompatibility.dll</HintPath>
+	  </Reference>
 	  <Reference Include="Unity.Netcode.Runtime">
 	    <HintPath>..\..\..\..\SteamLibrary\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.Netcode.Runtime.dll</HintPath>
 	  </Reference>

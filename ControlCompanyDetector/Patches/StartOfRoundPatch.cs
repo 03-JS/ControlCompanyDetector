@@ -1,5 +1,7 @@
 ﻿using ControlCompanyDetector.Logic;
 using HarmonyLib;
+using Steamworks;
+using Steamworks.Data;
 using UnityEngine;
 
 namespace ControlCompanyDetector.Patches
@@ -11,7 +13,7 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPostfix]
         static void PatchOnPlayerConnected()
         {
-            if (HUDManager.Instance != null && !StartOfRound.Instance.IsHost)
+            if (HUDManager.Instance != null /*&& !StartOfRound.Instance.IsHost*/)
             {
                 CoroutineManager.StartCoroutine(Detector.StartDetection());
             }

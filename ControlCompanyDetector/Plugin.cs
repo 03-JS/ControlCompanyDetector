@@ -2,23 +2,24 @@
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
-using ControlCompanyDetector.Logic;
 using ControlCompanyDetector.Patches;
 using HarmonyLib;
-using System.Collections;
+using LobbyCompatibility;
+using LobbyCompatibility.Attributes;
+using LobbyCompatibility.Enums;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using UnityEngine.Analytics;
 
 namespace ControlCompanyDetector
 {
     [BepInPlugin(modGUID, modName, modVersion)]
+    [BepInDependency("BMX.LobbyCompatibility", BepInDependency.DependencyFlags.HardDependency)]
+    [LobbyCompatibility(CompatibilityLevel.ClientOnly, VersionStrictness.None)]
     public class Plugin : BaseUnityPlugin
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "3.3.8";
+        private const string modVersion = "4.0.0";
 
         public static string[] colors;
 
@@ -27,12 +28,12 @@ namespace ControlCompanyDetector
         public static bool canHostDetectEnemySpawning;
         public static bool clientHasCCFilter;
         public static bool clientHasRBL;
-        public static PluginInfo problematicPluginInfo;
+        public static BepInEx.PluginInfo problematicPluginInfo;
 
         // Config related
         // public static ConfigEntry<string> bepinexPathEntry;
         public static ConfigEntry<bool> ignoreFriendlyLobbies;
-        public static ConfigEntry<bool> showInfoMessage;
+        // public static ConfigEntry<bool> showInfoMessage;
         public static ConfigEntry<bool> showCCLobbyPrefix;
         public static ConfigEntry<bool> highlightCCLobbies;
         public static ConfigEntry<bool> showControlCompanyLobbiesOnly;
@@ -41,6 +42,7 @@ namespace ControlCompanyDetector
         public static ConfigEntry<bool> detectMaskedSpawning;
         public static ConfigEntry<bool> detectEnemySpawningAsHost;
         public static ConfigEntry<string> lobbyHighlightColor;
+        public static ConfigEntry<bool> sendChatMessage;
 
         private readonly Harmony harmony = new Harmony(modGUID);
         private static Plugin Instance;
@@ -77,12 +79,14 @@ namespace ControlCompanyDetector
 
         internal void GenerateConfigValues()
         {
+            /*
             showInfoMessage = Config.Bind(
                 "Hosting", // Config section
                 "Show info message", // Key of this config
                 true, // Default value
                 "Set this to false if you want to hide the additional info message that can appear when hosting a lobby" // Description
             );
+            */
 
             showCCLobbyPrefix = Config.Bind(
                 "Public Lobbies", // Config section
@@ -148,6 +152,13 @@ namespace ControlCompanyDetector
                 true, // Default value
                 "Should the mod be able to detect if an enemy has been spawned by another player when hosting a lobby? (Only works if Detect enemy spawning is enabled)" // Description
             );
+
+            sendChatMessage = Config.Bind(
+                "Text Chat", // Config section
+                "Send chat message", // Key of this config
+                false, // Default value
+                "Sends a message in the chat to let others know when a lobby has Control Company" // Description
+            );
         }
 
         internal static void GenerateKeywords()
@@ -189,9 +200,9 @@ namespace ControlCompanyDetector
         public static void CheckProblematicMods()
         {
             canHostDetectEnemySpawning = true;
-            Dictionary<string, PluginInfo> Mods = Chainloader.PluginInfos;
+            Dictionary<string, BepInEx.PluginInfo> Mods = Chainloader.PluginInfos;
             mls.LogInfo("Getting currently loaded mods...");
-            foreach (PluginInfo info in Mods.Values)
+            foreach (BepInEx.PluginInfo info in Mods.Values)
             {
                 foreach (string key in Plugin.keywords)
                 {
@@ -208,9 +219,9 @@ namespace ControlCompanyDetector
 
         public static bool UserHasMod(string modGUID)
         {
-            Dictionary<string, PluginInfo> Mods = Chainloader.PluginInfos;
+            Dictionary<string, BepInEx.PluginInfo> mods = Chainloader.PluginInfos;
             mls.LogInfo("Checking for " + modGUID + "...");
-            foreach (PluginInfo info in Mods.Values)
+            foreach (BepInEx.PluginInfo info in mods.Values)
             {
                 if (info.Metadata.GUID.Equals(modGUID))
                 {

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using HarmonyLib;
+using LobbyCompatibility.Features;
+using LobbyCompatibility.Models;
 using Steamworks.Data;
 
 namespace ControlCompanyDetector.Patches
@@ -12,7 +15,7 @@ namespace ControlCompanyDetector.Patches
         [HarmonyPrefix]
         private static void FilterLobbyList(ref Lobby[] lobbyList, ref Lobby[] ___currentLobbyList)
         {
-            Plugin.clientHasCCFilter = Plugin.UserHasMod("ControlCompany.ControlCompany") || Plugin.UserHasMod("ControlCompany.ControlCompanyFilter");
+            Plugin.clientHasCCFilter = Plugin.UserHasMod("ControlCompany.ControlCompanyFilter");
             Plugin.clientHasRBL = Plugin.UserHasMod("Ryokune.BetterLobbies");
             
             if (Plugin.hideControlCompanyLobbies.Value)
@@ -20,6 +23,13 @@ namespace ControlCompanyDetector.Patches
                 List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
                 list.RemoveAll(delegate (Lobby lobby)
                 {
+                    LobbyDiff lobbyDiff = LobbyHelper.GetLobbyDiff(lobby);
+                    bool serverHasBMX = lobbyDiff.PluginDiffs.Any(diff => diff.ServerVersion != null); 
+                    if (serverHasBMX)
+                    {
+                        return lobbyDiff.PluginDiffs.Any(diff => diff.GUID == "ControlCompany.ControlCompany");
+                    }
+
                     string lobbyName = lobby.GetData("name");
                     bool flag = lobbyName.Contains('\u200b');
                     return flag;
@@ -34,6 +44,13 @@ namespace ControlCompanyDetector.Patches
                 List<Lobby> list = ___currentLobbyList.ToList<Lobby>();
                 list.RemoveAll(delegate (Lobby lobby)
                 {
+                    LobbyDiff lobbyDiff = LobbyHelper.GetLobbyDiff(lobby);
+                    bool serverHasBMX = lobbyDiff.PluginDiffs.Any(diff => diff.ServerVersion != null);
+                    if (serverHasBMX)
+                    {
+                        return !lobbyDiff.PluginDiffs.Any(diff => diff.GUID == "ControlCompany.ControlCompany");
+                    }
+
                     string lobbyName = lobby.GetData("name");
                     bool flag = lobbyName.Contains('\u200b');
                     return !flag;
