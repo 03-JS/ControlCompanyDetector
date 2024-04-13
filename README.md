@@ -18,6 +18,7 @@ Here's a full list of all the enemies it can detect:
 - Spider
 - Thumper
 - Bracken
+- Butler
 - Coil-Head
 - Masked / Mimic
 - Nutcracker
@@ -28,10 +29,11 @@ Here's a full list of all the enemies it can detect:
 A couple of examples that show this feature in action:
 
 ![obunga](https://i.imgur.com/UD5NRRN.png)
+
 ![yippee](https://i.imgur.com/OAAM6h3.png)
 
 ### WARNING:
-Any mods that alter how indoor enemies spawn will cause this feature to not work properly
+Mods that alter how indoor enemies spawn will cause this feature to not work properly
 
 ## Manually spawned enemies detection when hosting
 
