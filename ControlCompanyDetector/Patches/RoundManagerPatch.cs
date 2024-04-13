@@ -180,6 +180,10 @@ namespace ControlCompanyDetector.Patches
                 prefix = upper ? "An " : "an ";
                 return prefix + "Obunga";
             }
+            if (enemy.GetType() == typeof(ButlerEnemyAI))
+            {
+                return prefix + "Butler";
+            }
             return prefix + "[REDACTED]";
         }
 
@@ -190,7 +194,8 @@ namespace ControlCompanyDetector.Patches
                 || spawnedEnemy.GetType() == typeof(CrawlerAI) || spawnedEnemy.GetType() == typeof(HoarderBugAI)
                 || spawnedEnemy.GetType() == typeof(NutcrackerEnemyAI) || spawnedEnemy.GetType() == typeof(CentipedeAI)
                 || spawnedEnemy.GetType() == typeof(SandSpiderAI) || spawnedEnemy.GetType() == typeof(JesterAI)
-                || spawnedEnemy.GetType() == typeof(LassoManAI) || spawnedEnemy.GetType() == typeof(TestEnemy);
+                || spawnedEnemy.GetType() == typeof(LassoManAI) || spawnedEnemy.GetType() == typeof(TestEnemy)
+                || spawnedEnemy.GetType() == typeof(ButlerEnemyAI);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace ControlCompanyDetector
     {
         private const string modGUID = "JS03.ControlCompanyDetector";
         private const string modName = "Control Company Detector";
-        private const string modVersion = "4.0.0";
+        private const string modVersion = "4.0.1";
 
         public static string[] colors;
 
