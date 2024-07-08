@@ -184,6 +184,10 @@ namespace ControlCompanyDetector.Patches
             {
                 return prefix + "Butler";
             }
+            if (enemy.GetType() == typeof(ClaySurgeonAI))
+            {
+                return prefix + "Barber";
+            }
             return prefix + "[REDACTED]";
         }
 
@@ -195,7 +199,7 @@ namespace ControlCompanyDetector.Patches
                 || spawnedEnemy.GetType() == typeof(NutcrackerEnemyAI) || spawnedEnemy.GetType() == typeof(CentipedeAI)
                 || spawnedEnemy.GetType() == typeof(SandSpiderAI) || spawnedEnemy.GetType() == typeof(JesterAI)
                 || spawnedEnemy.GetType() == typeof(LassoManAI) || spawnedEnemy.GetType() == typeof(TestEnemy)
-                || spawnedEnemy.GetType() == typeof(ButlerEnemyAI);
+                || spawnedEnemy.GetType() == typeof(ButlerEnemyAI) || spawnedEnemy.GetType() == typeof(ClaySurgeonAI);
         }
     }
 }
