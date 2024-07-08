@@ -17,6 +17,7 @@ Here's a full list of all the enemies it can detect:
 - Snare flea
 - Spider
 - Thumper
+- Barber
 - Bracken
 - Butler
 - Coil-Head
