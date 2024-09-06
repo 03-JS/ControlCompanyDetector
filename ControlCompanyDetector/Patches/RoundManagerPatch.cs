@@ -199,7 +199,8 @@ namespace ControlCompanyDetector.Patches
                 || spawnedEnemy.GetType() == typeof(NutcrackerEnemyAI) || spawnedEnemy.GetType() == typeof(CentipedeAI)
                 || spawnedEnemy.GetType() == typeof(SandSpiderAI) || spawnedEnemy.GetType() == typeof(JesterAI)
                 || spawnedEnemy.GetType() == typeof(LassoManAI) || spawnedEnemy.GetType() == typeof(TestEnemy)
-                || spawnedEnemy.GetType() == typeof(ButlerEnemyAI) || spawnedEnemy.GetType() == typeof(ClaySurgeonAI);
+                || spawnedEnemy.GetType() == typeof(ButlerEnemyAI) || spawnedEnemy.GetType() == typeof(ClaySurgeonAI)
+                || spawnedEnemy.GetType() == typeof(CaveDwellerAI);
         }
     }
 }
