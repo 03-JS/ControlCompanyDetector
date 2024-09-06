@@ -188,6 +188,10 @@ namespace ControlCompanyDetector.Patches
             {
                 return prefix + "Barber";
             }
+            if (enemy.GetType() == typeof(ClaySurgeonAI))
+            {
+                return prefix + "Maneater";
+            }
             return prefix + "[REDACTED]";
         }
 
